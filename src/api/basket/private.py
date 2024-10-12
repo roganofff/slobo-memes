@@ -6,7 +6,7 @@ from random import randint
 
 
 @router.get('/private/random', status_code=status.HTTP_200_OK)
-async def get_random_public_meme() -> meme.Meme:
+async def get_random_private_meme() -> meme.Meme:
     # Logic
 
     return meme.Meme(
@@ -21,7 +21,7 @@ async def get_random_public_meme() -> meme.Meme:
 
 
 @router.get('/private/memes', status_code=status.HTTP_200_OK)
-async def get_random_public_meme() -> list[meme.Meme]:
+async def get_private_memes() -> list[meme.Meme]:
     # Logic
 
     return [meme.Meme(

@@ -20,7 +20,7 @@ async def get_random_public_meme() -> meme.Meme:
 
 
 @router.get('/public/top', status_code=status.HTTP_200_OK)
-async def get_random_public_meme() -> list[meme.Meme]:
+async def get_top_public_memes() -> list[meme.Meme]:
     # Logic
 
     return [meme.Meme(

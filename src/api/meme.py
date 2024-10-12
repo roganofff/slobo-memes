@@ -39,7 +39,7 @@ async def like(
 
 
 @router.post('/meme/dislike', status_code=status.HTTP_200_OK)
-async def like(
+async def dislike(
     request: meme.MarkMeme,
 ) -> meme.MarkMeme:
     # Logic
