@@ -15,7 +15,7 @@ async def create_meme(
     )
 
 
-@router.put('/meme/visible', status_code=status.HTTP_200_OK)
+@router.put('/meme/publicity', status_code=status.HTTP_200_OK)
 async def toggle_visible(
     request: meme.ChangeMemePublicityRequest,
 ) -> meme.ChangeMemePublicityResponse:
