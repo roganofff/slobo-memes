@@ -5,28 +5,45 @@ from typing import Optional
 from uuid import UUID
 
 
+class IDMixin:
+    id: UUID = Field(...)
+
+
 class CreateMemeRequest(BaseModel):
-    """JSON request model for creating meme."""
+    """JSON request model for create meme."""
 
-    comment: str = Field(..., max_length=100)
-    photo: str = Field(...)
-    visibility: Optional[bool] = Field(default=False)
-
-
-class CreateMemeResponse(BaseModel):
-    """JSON response model for creating meme."""
-
-    id: UUID = Field(...)
+    comment: str = Field(..., max_length=100, description='Comment for meme.')
+    photo: str = Field(..., description='Meme image.')
+    public: Optional[bool] = Field(
+        default=False,
+        description='Are all users can see this meme.',
+    )
 
 
-class ChangeMemeVisibilityRequest(BaseModel):
-    """JSON request model for toggling meme visibility."""
-
-    id: UUID = Field(...)
+class CreateMemeResponse(IDMixin, BaseModel):
+    """JSON response model for create meme."""
 
 
-class ChangeMemeVisibilityResponse(BaseModel):
-    """JSON response model for toggling meme visibility."""
+class ChangeMemePublicityRequest(IDMixin, BaseModel):
+    """JSON request model for toggle meme visibility."""
 
-    id: UUID = Field(...)
-    visibility: bool = Field(...)
+
+class ChangeMemePublicityResponse(IDMixin, BaseModel):
+    """JSON response model for toggle meme visibility."""
+
+    public: bool = Field(..., descriprion='Meme visibility after toggle.')
+
+
+class MarkMeme(IDMixin, BaseModel):
+    """JSON request/response model for like/dislike meme."""
+
+
+class Meme(IDMixin, BaseModel):
+    """JSON model for meme."""
+
+    user_id: int = Field(..., description='Who add meme.')
+    comment: str = Field(..., description='Comment for meme.')
+    photo: str = Field(..., description='Meme image.')
+    public: bool = Field(..., description='Are all users can see this meme.')
+    likes: int = Field(default=0, description='Number of likes.')
+    dislikes: int = Field(default=0, description='Number of dislikes.')
