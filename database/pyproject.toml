@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "database"
+version = "0.1.0"
+description = ""
+authors = ["rTiRe <zientenin@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlalchemy = "^2.0.36"
+aio-pika = "^9.5.0"
+pydantic-settings = "^2.6.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
