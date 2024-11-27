@@ -8,6 +8,8 @@ class Settings(BaseSettings):
 
     WEBHOOK_URL: Optional[str]
 
+    IMAGE_HOST_API_KEY: str
+
     @property
     def bot_webhook_url(self) -> str:
         return f'{self.WEBHOOK_URL}/{self.BOT_WEBHOOK_PATH}'
