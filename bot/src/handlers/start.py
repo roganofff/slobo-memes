@@ -6,6 +6,7 @@ from aiogram.types import Message
 from src.handlers.router import router
 from src.templates.env import render
 from src.handlers.main_menu import main_menu
+from src.keyboards.start import keyboard
 
 
 @router.message(CommandStart())
@@ -13,5 +14,6 @@ async def start(message: Message, state: FSMContext) -> None:
     await state.set_state(default_state)
     await message.answer(
         text=render('start.jinja2'),
+        reply_markup=await keyboard(resize_keyboard=True)
     )
     await main_menu(message, state)

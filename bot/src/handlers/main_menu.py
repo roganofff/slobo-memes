@@ -10,6 +10,7 @@ from config.settings import settings
 from src.utils.image import Image
 
 
+@router.message(F.text == 'Главное меню')
 async def main_menu(message: Message, state: FSMContext) -> None:
     await message.delete()
     await state.set_state(MainStates.main_menu)
