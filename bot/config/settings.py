@@ -6,7 +6,8 @@ class Settings(BaseSettings):
     BOT_TOKEN: str
     BOT_WEBHOOK_PATH: str
 
-    WEBHOOK_URL: Optional[str]
+    BOT_FASTAPI_HOST: Optional[str]
+    BOT_FASTAPI_PORT: int
 
     IMAGE_HOST_API_KEY: str
 

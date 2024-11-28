@@ -16,15 +16,15 @@ services:
     image: 'postgres:15.5'
     container_name: database
     environment:
-      - POSTGRES_HOST=${BOT_POSTGRES_HOST}
-      - POSTGRES_PORT=${BOT_POSTGRES_PORT}
-      - POSTGRES_DB=${BOT_POSTGRES_DB}
-      - POSTGRES_USER=${BOT_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${BOT_POSTGRES_PASSWORD}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-      - ${BOT_POSTGRES_PORT}:5432
+      - ${POSTGRES_PORT}:5432
     healthcheck:
-      test: [ "CMD", "pg_isready", "-d", "${BOT_POSTGRES_DB}", "-U", "${BOT_POSTGRES_USER}" ]
+      test: [ "CMD", "pg_isready", "-d", "${POSTGRES_DB}", "-U", "${POSTGRES_USER}" ]
       interval: 1s
       timeout: 1s
       retries: 60
@@ -36,28 +36,28 @@ services:
     build: ./database
     container_name: migrates
     environment:
-      - POSTGRES_HOST=${BOT_POSTGRES_HOST}
-      - POSTGRES_PORT=${BOT_POSTGRES_PORT}
-      - POSTGRES_DB=${BOT_POSTGRES_DB}
-      - POSTGRES_USER=${BOT_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${BOT_POSTGRES_PASSWORD}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     command: python3 -m alembic upgrade head
     depends_on:
-      bot_postgres:
+      database:
         condition: service_healthy
 
   bot:
     container_name: bot
     stop_signal: SIGINT
-    build: ./bot_service
+    build: ./bot
     volumes:
-      - ./bot_service:/usr/src/godwest/bot_service
+      - ./bot:/usr/src/slobo_memes/bot
     ports:
       - ${BOT_FASTAPI_PORT}:${BOT_FASTAPI_PORT}
     command: poetry run python -m src.app
     restart: unless-stopped
     depends_on:
-      bot_migrates:
+      migrates:
         condition: service_started
       rabbitmq:
         condition: service_started

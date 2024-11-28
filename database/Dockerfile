@@ -1,9 +1,9 @@
 FROM python:3.11
 
-RUN mkdir -p /usr/src/slobo_memes/bot
-WORKDIR /usr/src/slobo_memes/bot
+RUN mkdir -p /usr/src/slobo_memes/database
+WORKDIR /usr/src/slobo_memes/database
 
-COPY . /usr/src/slobo_memes/bot
+COPY . /usr/src/slobo_memes/database
 
 RUN pip3 install --upgrade  poetry==1.8.3
 
