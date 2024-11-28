@@ -5,8 +5,8 @@ markup_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text='Добавить мем',
-                callback_data='add_meme',
+                text='Назад',
+                callback_data='main_menu',
             ),
         ],
     ],
