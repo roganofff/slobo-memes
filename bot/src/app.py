@@ -68,6 +68,12 @@ async def start_polling() -> None:
 
 if __name__ == '__main__':
     if settings.BOT_FASTAPI_HOST:
-        uvicorn.run('src.app:create_app', factory=True, host='0.0.0.0', port=8000, workers=1)
+        uvicorn.run(
+            'src.app:create_app',
+            factory=True,
+            host='0.0.0.0',
+            port=settings.BOT_FASTAPI_PORT,
+            workers=1,
+        )
     else:
         asyncio.run(start_polling())

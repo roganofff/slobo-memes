@@ -9,6 +9,7 @@ from src.keyboards.request_meme import keyboard as request_keyboard
 from config.settings import settings
 from src.utils.edit_or_send_message import edit_or_send_message
 from src.utils.image import Image
+from src.storage.rabbitmq import publish_message_with_response
 
 
 @router.callback_query(
@@ -52,18 +53,32 @@ async def process_meme(message: Message, state: FSMContext) -> None:
         await edit_or_send_message(message_args, request_message)
         return
     file_url = await Image.get_telegram_url(message.photo[-1].file_id)
+    publish_result = await publish_message_with_response(
+        'add_meme',
+        {
+            'user_id': message.from_user.id,
+            'text': message.html_text,
+            'image_url': file_url,
+        }
+    )
+    print(publish_result, flush=True)
     message_args = {
         'text': render(
             'meme.jinja2',
-            description=message.html_text
+            description=publish_result['text']
         ),
         # 'reply_markup': await keyboard(),
         'chat_id': message.chat.id,
         'link_preview_options': LinkPreviewOptions(
-            url=await Image.get_public_url(file_url),
+            url=publish_result['image_url'],
             show_above_text=True,
             prefer_small_media=True,
         ),
     }
     await state.set_state(MemeStates.show)
     await edit_or_send_message(message_args, request_message)
+    await state.set_data(
+        {
+            'message_id': publish_result['id']
+        }
+    )

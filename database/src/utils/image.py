@@ -3,7 +3,6 @@ from typing import Union, Self
 from types import MappingProxyType
 
 from config.settings import settings
-from src.bot import get_bot
 
 
 class Image:
@@ -59,8 +58,6 @@ class Image:
     @classmethod
     async def get_public_url(cls, source: str) -> str:
         url = ''
-        if not source:
-            return ''
         async with ClientSession() as session:
             this_params = cls.__PARAMS.copy()
             this_params['source'] = source
@@ -68,10 +65,3 @@ class Image:
             if response:
                 url = response['image']['image']['url']
         return url
-
-    @classmethod
-    async def get_telegram_url(cls, telegram_file_id: str) -> str:
-        bot = get_bot()
-        bot_files_url = f'https://api.telegram.org/file/bot{settings.BOT_TOKEN}'
-        file_path = (await bot.get_file(telegram_file_id)).file_path
-        return f'{bot_files_url}/{file_path}'

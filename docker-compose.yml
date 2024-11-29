@@ -12,9 +12,9 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
-  database:
+  postgres:
     image: 'postgres:15.5'
-    container_name: database
+    container_name: postgres
     environment:
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=${POSTGRES_PORT}
@@ -32,19 +32,21 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  migrates:
+  database:
+    container_name: database
     build: ./database
-    container_name: migrates
-    environment:
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    command: python3 -m alembic upgrade head
+    volumes:
+      - ./database:/usr/src/slobo_memes/database
+    command: bash -c "poetry run python -m alembic upgrade head && poetry run python -m src.app"
+    stop_signal: SIGINT
+    restart: unless-stopped
     depends_on:
-      database:
+      postgres:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
+    env_file:
+      - database/config/.env
 
   bot:
     container_name: bot
@@ -57,8 +59,6 @@ services:
     command: poetry run python -m src.app
     restart: unless-stopped
     depends_on:
-      migrates:
-        condition: service_started
       rabbitmq:
         condition: service_started
     env_file:

@@ -1,1 +1,1 @@
-docker compose --env-file ./bot/config/.env --env-file ./database/config/.env stop
+docker compose --env-file ./bot/config/.env --env-file ./database/config/.env --env-file ./rabbitmq/config/.env stop

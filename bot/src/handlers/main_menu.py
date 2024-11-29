@@ -20,8 +20,14 @@ default_flags = {
 async def main_menu(message: Message, query: CallbackQuery | None = None) -> None:
     event = query if query else message
     user_profile_photo = await event.from_user.get_profile_photos()
-    user_photo_id = user_profile_photo.photos[0][-1].file_id
-    file_url = await Image.get_telegram_url(user_photo_id)
+    try:
+        user_photo_id = user_profile_photo.photos[0][-1].file_id
+    except IndexError:
+        user_photo_id = None
+    if user_photo_id:
+        file_url = await Image.get_telegram_url(user_photo_id)
+    else:
+        file_url = None
     message_args = {
         'text': render(
             template_name='main_menu.jinja2',
