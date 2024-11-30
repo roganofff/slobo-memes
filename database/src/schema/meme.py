@@ -22,3 +22,14 @@ class AddMeme(TypedDict):
 class RandomMeme(TypedDict):
     user_id: int
     public_only: bool
+
+
+class RateMeme(TypedDict):
+    meme_id: str
+    user_id: int
+    new_rating: bool
+
+
+class RemoveRating(TypedDict):
+    meme_id: str
+    user_id: int

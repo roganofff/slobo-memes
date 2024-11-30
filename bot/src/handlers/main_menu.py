@@ -6,7 +6,6 @@ from src.handlers.router import router
 from src.states import states
 from src.templates.env import render
 from src.keyboards.main_menu import keyboard
-from config.settings import settings
 from src.utils.image import Image
 
 

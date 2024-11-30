@@ -1,5 +1,5 @@
 from aiogram import F
-from aiogram.types import CallbackQuery, Message, LinkPreviewOptions
+from aiogram.types import CallbackQuery, LinkPreviewOptions
 from aiogram.fsm.context import FSMContext
 
 from src.handlers.router import router
@@ -47,7 +47,8 @@ async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool
     await edit_or_send_message(message_args, query.message.message_id)
     await state.set_data(
         {
-            'meme_id': publish_result['id']
+            'meme_id': publish_result['id'],
+            'public_only': public_only,
         }
     )
 

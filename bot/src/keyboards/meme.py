@@ -22,18 +22,18 @@ async def keyboard(
     )
     if is_saved:
         personal_text = 'Удалить из СВОих'
-        personal_data = 'delete_personal'
+        personal_data = 'delete_saved'
     else:
         personal_text = 'Добавить к себе'
-        personal_data = 'add_personal'
+        personal_data = 'add_saved'
     builder.button(
             text=personal_text,
             callback_data=personal_data,
         )
     if is_public:
-        if user_rating == Mark.LIKE:
+        if user_rating == True:
             like_text = f'[Нрав {likes}]'
-            like_data = 'remove_mark'
+            like_data = 'remove_rating'
         else:
             like_text = f'Нрав {likes}'
             like_data = 'like'
@@ -41,9 +41,9 @@ async def keyboard(
             text=like_text,
             callback_data=like_data,
         )
-        if user_rating == Mark.DISLIKE:
+        if user_rating == False:
             dislike_text = f'[Ненрав {dislikes}]'
-            dislike_data = 'remove_mark'
+            dislike_data = 'remove_rating'
         else:
             dislike_text = f'Ненрав {dislikes}'
             dislike_data = 'dislike'
@@ -54,7 +54,7 @@ async def keyboard(
         if is_owner:
             builder.button(
                 text='Сделать приватным',
-                callback_data='make_personal',
+                callback_data='make_private',
             )
     elif is_owner:
         builder.button(
