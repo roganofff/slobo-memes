@@ -1,3 +1,5 @@
+from typing import Optional
+
 from aiogram import F
 from aiogram.types import CallbackQuery, LinkPreviewOptions
 from aiogram.fsm.context import FSMContext
@@ -7,19 +9,23 @@ from src.storage.rabbitmq import publish_message_with_response
 from src.utils.edit_or_send_message import edit_or_send_message
 from src.templates.env import render
 from src.keyboards.meme import keyboard
-from src.states.states import MemeStates, MainStates
+from src.states.states import MemeStates
 
 
-async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool) -> None:
+async def meme_saves(query: CallbackQuery, state: FSMContext, save: bool) -> None:
+    data = await state.get_data()
+    public_only = data['public_only']
+    meme_id = data['meme_id']
+    routing_key = 'add_to_saved' if save else 'remove_from_saved'
     publish_result = await publish_message_with_response(
-        routing_key='random_meme',
+        routing_key=routing_key,
         message={
             'user_id': query.from_user.id,
-            'public_only': public_only,
+            'meme_id': meme_id,
         },
     )
     if not publish_result:
-        query.answer('Мемов нет :(')
+        query.answer('Ошибка :o')
         return
     query.answer()
     message_args = {
@@ -43,23 +49,14 @@ async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool
             prefer_small_media=True,
         ),
     }
-    await state.set_state(MemeStates.show)
     await edit_or_send_message(message_args, query.message.message_id)
-    await state.set_data(
-        {
-            'meme_id': publish_result['id'],
-            'public_only': public_only,
-        }
-    )
 
 
-@router.callback_query(MainStates.main_menu, F.data == 'random_public')
-@router.callback_query(MemeStates.show, F.data == 'random_public')
-async def random_public_meme(query: CallbackQuery, state: FSMContext) -> None:
-    await random_meme(query, state, public_only=True)
+@router.callback_query(MemeStates.show, F.data == 'add_to_saved')
+async def add_to_saved(query: CallbackQuery, state: FSMContext) -> None:
+    await meme_saves(query, state, save=True)
 
 
-@router.callback_query(MainStates.main_menu, F.data == 'random_saved')
-@router.callback_query(MemeStates.show, F.data == 'random_saved')
-async def random_public_meme(query: CallbackQuery, state: FSMContext) -> None:
-    await random_meme(query, state, public_only=False)
+@router.callback_query(MemeStates.show, F.data == 'remove_from_saved')
+async def remove_from_saved(query: CallbackQuery, state: FSMContext) -> None:
+    await meme_saves(query, state, save=False)

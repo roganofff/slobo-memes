@@ -33,3 +33,8 @@ class RateMeme(TypedDict):
 class RemoveRating(TypedDict):
     meme_id: str
     user_id: int
+
+
+class MemeSaves(TypedDict):
+    meme_id: str
+    user_id: int

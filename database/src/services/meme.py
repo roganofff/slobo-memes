@@ -103,11 +103,12 @@ class MemeService:
         if public_only:
             statement = select(Meme).where(Meme.is_public == True)
         else:
-            statement = select(Meme).join(
+            print('a', flush=True)
+            statement = select(Meme).where(Saved.user_id == user_id).join(
                 Saved,
                 Saved.meme_id == Meme.id,
-            ).where(Saved.user_id == user_id)
-        meme = await session.execute(statement.order_by(func.random()))
+            )
+        meme = await session.execute(statement.order_by(func.random()).limit(1))
         meme = meme.scalars().first()
         if not meme:
             return None
@@ -171,7 +172,7 @@ class MemeService:
         except IntegrityError:
             await session.rollback()
         meme = await session.get(Meme, meme_id)
-        return await MemeService.build_meme_response(session, meme, user_id)
+        return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
     @inject
@@ -187,7 +188,7 @@ class MemeService:
             await session.delete(saved)
             await session.commit()
         meme = await session.get(Meme, meme_id)
-        return await MemeService.build_meme_response(session, meme, user_id)
+        return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
     @inject
@@ -204,7 +205,7 @@ class MemeService:
             return None
         meme.is_public = new_visibility
         await session.commit()
-        return await MemeService.build_meme_response(session, meme, user_id)
+        return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
     @inject

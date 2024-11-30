@@ -1,10 +1,8 @@
-from typing import Union
+from typing import Optional
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardMarkup
 
-from src.utils.mark import Mark
-from src.utils.random_type import RandomType
 
 async def keyboard(
     is_owner: bool,
@@ -12,8 +10,8 @@ async def keyboard(
     is_public: bool,
     likes: int,
     dislikes: int,
-    user_rating: Union[Mark, None] = None,
-    random_type: Union[RandomType, None] = None,
+    user_rating: Optional[bool] = None,
+    random_type: Optional[str] = None,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(
@@ -22,10 +20,10 @@ async def keyboard(
     )
     if is_saved:
         personal_text = 'Удалить из СВОих'
-        personal_data = 'delete_saved'
+        personal_data = 'remove_from_saved'
     else:
         personal_text = 'Добавить к себе'
-        personal_data = 'add_saved'
+        personal_data = 'add_to_saved'
     builder.button(
             text=personal_text,
             callback_data=personal_data,
