@@ -9,6 +9,16 @@ markup_keyboard = InlineKeyboardMarkup(
                 callback_data='add_meme',
             ),
         ],
+        [
+            InlineKeyboardButton(
+                text='Случайный общий',
+                callback_data='random_public',
+            ),
+            InlineKeyboardButton(
+                text='Случайный личный',
+                callback_data='random_saved',
+            ),
+        ]
     ],
 )
 

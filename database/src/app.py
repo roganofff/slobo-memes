@@ -7,7 +7,7 @@ import aio_pika
 import uvicorn
 
 from src.storage.rabbitmq import channel_pool
-from src.handlers.add_meme import add_meme
+from src.handlers import add_meme, random_meme
 
 async def process_messages():
     async with channel_pool.acquire() as channel:
@@ -15,7 +15,10 @@ async def process_messages():
         exchange = await channel.declare_exchange('meme_exchange', aio_pika.ExchangeType.DIRECT)
         add_meme_queue = await channel.declare_queue('add_meme_queue', durable=True)
         await add_meme_queue.bind(exchange, routing_key='add_meme')
-        await add_meme_queue.consume(add_meme)
+        await add_meme_queue.consume(add_meme.add_meme)
+        random_meme_queue = await channel.declare_queue('random_meme_queue', durable=True)
+        await random_meme_queue.bind(exchange, routing_key='random_meme')
+        await random_meme_queue.consume(random_meme.random_meme)
 
 
 @asynccontextmanager

@@ -1,2 +1,2 @@
-from .meta import Base
-from .models import Base
+from src.models.meta import Base
+from src.models.models import Meme, Rating, Saved, Base

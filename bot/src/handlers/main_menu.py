@@ -1,7 +1,6 @@
 from aiogram import F
 from aiogram.types import CallbackQuery, Message, LinkPreviewOptions
 from aiogram.fsm.context import FSMContext
-from types import MappingProxyType
 
 from src.handlers.router import router
 from src.states import states
@@ -48,12 +47,10 @@ async def main_menu(message: Message, query: CallbackQuery | None = None) -> Non
 
 @router.message(
     F.text == 'Главное меню',
-    flags={
-        'long_operation': 'typing',
-        'new_state': states.MainStates.main_menu
-    },
+    flags=default_flags,
 )
 async def main_menu_message(message: Message, state: FSMContext) -> None:
+    await state.set_data({})
     await message.delete()
     await main_menu(message)
 
@@ -63,6 +60,12 @@ async def main_menu_message(message: Message, state: FSMContext) -> None:
     F.data == 'main_menu',
     flags=default_flags,
 )
+@router.callback_query(
+    states.MemeStates.show,
+    F.data == 'main_menu',
+    flags=default_flags,
+)
 async def main_menu_callback(query: CallbackQuery, state: FSMContext) -> None:
+    await state.set_data({})
     await query.answer()
     await main_menu(query.message, query)

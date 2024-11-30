@@ -1,14 +1,24 @@
-from typing import TypedDict
+from typing import TypedDict, Union
+
 
 class Meme(TypedDict):
     id: str
-    user_id: int
-    text: str
+    creator_id: int
+    description: str
     image_url: str
-    public: bool
+    is_public: bool
+    likes: int
+    dislikes: int
+    user_rating: Union[bool, None]
+    is_saved: bool
 
 
 class AddMeme(TypedDict):
-    user_id: int
-    text: str
+    creator_id: int
+    description: str
     image_url: str
+
+
+class RandomMeme(TypedDict):
+    user_id: int
+    public_only: bool
