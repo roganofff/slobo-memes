@@ -12,6 +12,7 @@ async def keyboard(
     dislikes: int,
     user_rating: Optional[bool] = None,
     random_type: Optional[str] = None,
+    pagination: tuple[str, str] = None,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(
@@ -69,8 +70,25 @@ async def keyboard(
             text='Еще!',
             callback_data=f'random_{random_type}',
         )
+    if pagination:
+        if pagination[0]:
+            builder.button(
+                text='Пред',
+                callback_data='previous_meme',
+            )
+        if pagination[1]:
+            builder.button(
+                text='След',
+                callback_data='next_meme',
+            )
     if is_public:
-        builder.adjust(1, 1, 2, 1, 1, 1)
+        if is_owner:
+            builder.adjust(1, 1, 2, 1, 1, 2)
+        else:
+            builder.adjust(1, 1, 2, 2)
     else:
-        builder.adjust(1, repeat=True)
+        if is_owner:
+            builder.adjust(1, 1, 1, 1, 2)
+        else:
+            builder.adjust(1, 1, 2)
     return builder.as_markup()

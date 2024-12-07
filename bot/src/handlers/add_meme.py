@@ -78,7 +78,7 @@ async def process_meme(message: Message, state: FSMContext) -> None:
         'link_preview_options': LinkPreviewOptions(
             url=publish_result['image_url'],
             show_above_text=True,
-            prefer_small_media=True,
+            prefer_large_media=True,
         ),
     }
     await state.set_state(MemeStates.show)

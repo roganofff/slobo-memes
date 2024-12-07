@@ -14,7 +14,10 @@ from src.states.states import MemeStates
 
 async def meme_saves(query: CallbackQuery, state: FSMContext, save: bool) -> None:
     data = await state.get_data()
-    public_only = data['public_only']
+    public_only = data.get('public_only')
+    random_type = None
+    if public_only is not None:
+        random_type = 'public' if public_only else 'saved'
     meme_id = data['meme_id']
     routing_key = 'add_to_saved' if save else 'remove_from_saved'
     publish_result = await publish_message_with_response(
@@ -40,13 +43,14 @@ async def meme_saves(query: CallbackQuery, state: FSMContext, save: bool) -> Non
             likes=publish_result['likes'],
             dislikes=publish_result['dislikes'],
             user_rating=publish_result['user_rating'],
-            random_type='public' if public_only else 'saved'
+            random_type=random_type,
+            pagination=publish_result.get('pagination'),
         ),
         'chat_id': query.message.chat.id,
         'link_preview_options': LinkPreviewOptions(
             url=publish_result['image_url'],
             show_above_text=True,
-            prefer_small_media=True,
+            prefer_large_media=True,
         ),
     }
     await edit_or_send_message(message_args, query.message.message_id)
