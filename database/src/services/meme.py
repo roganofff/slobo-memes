@@ -103,7 +103,6 @@ class MemeService:
         if public_only:
             statement = select(Meme).where(Meme.is_public == True)
         else:
-            print('a', flush=True)
             statement = select(Meme).where(Saved.user_id == user_id).join(
                 Saved,
                 Saved.meme_id == Meme.id,

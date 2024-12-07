@@ -38,3 +38,9 @@ class RemoveRating(TypedDict):
 class MemeSaves(TypedDict):
     meme_id: str
     user_id: int
+
+
+class ChangeVisibility(TypedDict):
+    meme_id: str
+    user_id: int
+    new_visibility: bool
