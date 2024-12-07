@@ -27,7 +27,7 @@ markup_keyboard = InlineKeyboardMarkup(
         ],
         [
             InlineKeyboardButton(
-                text='Популярные',
+                text='Популярный',
                 callback_data='popular',
             ),
         ],

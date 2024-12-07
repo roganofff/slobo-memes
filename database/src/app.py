@@ -7,7 +7,7 @@ import aio_pika
 import uvicorn
 
 from src.storage.rabbitmq import channel_pool
-from src.handlers import add_meme, random_meme, rate_meme, meme_saves, change_visibility, delete_meme, list_saved
+from src.handlers import add_meme, random_meme, rate_meme, meme_saves, change_visibility, delete_meme, list_saved, popular
 
 async def process_messages():
     async with channel_pool.acquire() as channel:
@@ -43,6 +43,9 @@ async def process_messages():
         get_saved_meme_queue = await channel.declare_queue('get_saved_meme_queue', durable=True)
         await get_saved_meme_queue.bind(exchange, routing_key='get_saved')
         await get_saved_meme_queue.consume(list_saved.get_meme)
+        popular_meme_queue = await channel.declare_queue('popular_meme_queue', durable=True)
+        await popular_meme_queue.bind(exchange, routing_key='popular_meme')
+        await popular_meme_queue.consume(popular.popular_meme)
 
 
 @asynccontextmanager
