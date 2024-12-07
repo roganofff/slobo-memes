@@ -18,7 +18,19 @@ markup_keyboard = InlineKeyboardMarkup(
                 text='Случайный личный',
                 callback_data='random_saved',
             ),
-        ]
+        ],
+        [
+            InlineKeyboardButton(
+                text='Мои сохры',
+                callback_data='list_saved',
+            ),
+        ],
+        [
+            InlineKeyboardButton(
+                text='Популярные',
+                callback_data='popular',
+            ),
+        ],
     ],
 )
 
