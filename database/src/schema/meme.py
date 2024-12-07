@@ -11,6 +11,7 @@ class Meme(TypedDict):
     dislikes: int
     user_rating: Union[bool, None]
     is_saved: bool
+    pagination: tuple[str | None, str | None]
 
 
 class AddMeme(TypedDict):
@@ -44,3 +45,12 @@ class ChangeVisibility(TypedDict):
     meme_id: str
     user_id: int
     new_visibility: bool
+
+
+class FirstSavedMeme(TypedDict):
+    user_id: int
+
+
+class SavedMeme(TypedDict):
+    user_id: int
+    saved_id: str

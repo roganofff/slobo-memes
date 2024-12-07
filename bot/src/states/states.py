@@ -12,3 +12,5 @@ class AddMemeStates(StatesGroup):
 
 class MemeStates(StatesGroup):
     show = State()
+    next = State()
+    prev = State()

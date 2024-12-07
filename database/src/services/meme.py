@@ -34,6 +34,7 @@ class MemeService:
         dislikes: Optional[int] = None,
         user_rating: Optional[bool] = None,
         is_saved: Optional[bool] = None,
+        pagination: tuple[str | None, str | None] = (None, None),
         session: AsyncSession = Provide(get_db),
     ) -> MemeDict:
         if likes is None:
@@ -61,6 +62,7 @@ class MemeService:
             dislikes=dislikes,
             user_rating=user_rating,
             is_saved=is_saved,
+            pagination=pagination,
         )
 
     @staticmethod
@@ -205,6 +207,71 @@ class MemeService:
         meme.is_public = new_visibility
         await session.commit()
         return await MemeService.build_meme_response(meme, user_id)
+
+    @staticmethod
+    @inject
+    async def get_saved_meme_neighbors(
+        user_id: int,
+        saved_id: str,
+        session: AsyncSession = Provide(get_db),
+    ) -> tuple[str | None, str | None]:
+        next_statement = (
+            select(Saved.id)
+            .where(Saved.user_id == user_id, Saved.id > saved_id)
+            .order_by(Saved.id.asc())
+            .limit(1)
+        )
+        prev_statement = (
+            select(Saved.id)
+            .where(Saved.user_id == user_id, Saved.id < saved_id)
+            .order_by(Saved.id.desc())
+            .limit(1)
+        )
+        next_result = (await session.execute(next_statement)).scalar()
+        prev_result = (await session.execute(prev_statement)).scalar()
+        if isinstance(next_result, uuid.UUID):
+            next_result = str(next_result)
+        if isinstance(prev_result, uuid.UUID):
+            prev_result = str(prev_result)
+        return (prev_result, next_result)
+
+    @staticmethod
+    @inject
+    async def get_saved_meme_by_id(
+        user_id: int,
+        saved_id: str,
+        session: AsyncSession = Provide(get_db),
+    ) -> Optional[MemeDict]:
+        statement = (
+            select(Meme)
+            .join(Saved, Saved.meme_id == Meme.id)
+            .where(Saved.id == saved_id)
+        )
+        result = await session.execute(statement)
+        meme = result.scalars().first()
+        if not meme:
+            return None
+        neightbours = await MemeService.get_saved_meme_neighbors(
+            user_id,
+            saved_id,
+        )
+        return await MemeService.build_meme_response(meme, user_id, pagination=neightbours)
+
+    @staticmethod
+    @inject
+    async def get_first_saved_meme(
+        user_id: int,
+        session: AsyncSession = Provide(get_db),
+    ) -> Optional[str]:
+        statement = (
+            select(Saved.id)
+            .where(Saved.user_id == user_id)
+            .order_by(Saved.id.asc())
+            .limit(1)
+        )
+        result = (await session.execute(statement)).scalar()
+        if result:
+            return await MemeService.get_saved_meme_by_id(user_id, result)
 
     @staticmethod
     @inject
