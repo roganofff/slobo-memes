@@ -1,30 +1,31 @@
 from aiogram import F
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, LinkPreviewOptions
+from aiogram.fsm.context import FSMContext
 
 from src.handlers.router import router
-from src.keyboards.meme import keyboard
-from src.states.states import MainStates, MemeStates
 from src.storage.rabbitmq import publish_message_with_response
-from src.templates.env import render
 from src.utils.edit_or_send_message import edit_or_send_message
+from src.templates.env import render
+from src.keyboards.meme import keyboard
+from src.states.states import MemeStates, MainStates
 
 
-default_flags = {
-    'new_state': MemeStates.show
-}
-
-
-async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool) -> None:
+@router.callback_query(
+    MainStates.main_menu,
+    F.data == 'popular',
+    flags={
+        'new_state': MemeStates.show
+    },
+)
+async def popular_meme(query: CallbackQuery, state: FSMContext) -> None:
     publish_result = await publish_message_with_response(
-        routing_key='random_meme',
+        routing_key='popular_meme',
         message={
             'user_id': query.from_user.id,
-            'public_only': public_only,
         },
     )
     if not publish_result:
-        query.answer('Мемов нет :(')
+        query.answer('Мема нет :(')
         return
     query.answer()
     message_args = {
@@ -39,7 +40,6 @@ async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool
             likes=publish_result['likes'],
             dislikes=publish_result['dislikes'],
             user_rating=publish_result['user_rating'],
-            random_type='public' if public_only else 'saved'
         ),
         'chat_id': query.message.chat.id,
         'link_preview_options': LinkPreviewOptions(
@@ -52,18 +52,5 @@ async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool
     await state.set_data(
         {
             'meme_id': publish_result['id'],
-            'public_only': public_only,
         }
     )
-
-
-@router.callback_query(MainStates.main_menu, F.data == 'random_public', flags=default_flags)
-@router.callback_query(MemeStates.show, F.data == 'random_public')
-async def random_public_meme(query: CallbackQuery, state: FSMContext) -> None:
-    await random_meme(query, state, public_only=True)
-
-
-@router.callback_query(MainStates.main_menu, F.data == 'random_saved', flags=default_flags)
-@router.callback_query(MemeStates.show, F.data == 'random_saved')
-async def random_public_meme(query: CallbackQuery, state: FSMContext) -> None:
-    await random_meme(query, state, public_only=False)
