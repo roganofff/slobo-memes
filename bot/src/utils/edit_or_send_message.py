@@ -16,6 +16,5 @@ async def edit_or_send_message(
             )
         except exceptions.TelegramBadRequest:
             return
-        finally:
-            return
+        return
     await bot.send_message(**message_args)

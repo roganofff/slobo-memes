@@ -1,7 +1,7 @@
 from typing import Optional
 
-from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.types import InlineKeyboardMarkup
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
 async def keyboard(
@@ -30,7 +30,7 @@ async def keyboard(
             callback_data=personal_data,
         )
     if is_public:
-        if user_rating == True:
+        if user_rating:
             like_text = f'[Нрав {likes}]'
             like_data = 'remove_rating'
         else:
@@ -40,7 +40,7 @@ async def keyboard(
             text=like_text,
             callback_data=like_data,
         )
-        if user_rating == False:
+        if not user_rating:
             dislike_text = f'[Ненрав {dislikes}]'
             dislike_data = 'remove_rating'
         else:

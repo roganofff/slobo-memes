@@ -1,9 +1,9 @@
 from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
-from aiogram.types import TelegramObject, Message, CallbackQuery
+from aiogram.dispatcher.flags import get_flag
 from aiogram.fsm.context import FSMContext
-from aiogram.dispatcher.flags import get_flag, extract_flags
+from aiogram.types import CallbackQuery, Message, TelegramObject
 
 
 class StateMiddleware(BaseMiddleware):

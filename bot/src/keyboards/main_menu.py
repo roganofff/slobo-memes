@@ -1,11 +1,11 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 markup_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
-                text='Добавить мем',
+                text='Доба'
+                     'вить мем',
                 callback_data='add_meme',
             ),
         ],

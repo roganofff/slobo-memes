@@ -1,7 +1,6 @@
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.schema import MetaData
 
-
 # Recommended naming convention used by Alembic, as various different database
 # providers will autogenerate vastly different names making migrations more
 # difficult. See: https://alembic.sqlalchemy.org/en/latest/naming.html

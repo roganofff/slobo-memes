@@ -1,13 +1,13 @@
 from aiogram import F
-from aiogram.types import CallbackQuery, LinkPreviewOptions
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, LinkPreviewOptions
 
 from src.handlers.router import router
-from src.storage.rabbitmq import publish_message_with_response
-from src.utils.edit_or_send_message import edit_or_send_message
-from src.templates.env import render
 from src.keyboards.meme import keyboard
-from src.states.states import MemeStates, MainStates
+from src.states.states import MainStates, MemeStates
+from src.storage.rabbitmq import publish_message_with_response
+from src.templates.env import render
+from src.utils.edit_or_send_message import edit_or_send_message
 
 
 async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool) -> None:

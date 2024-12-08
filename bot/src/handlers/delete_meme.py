@@ -1,11 +1,11 @@
 from aiogram import F
-from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery
 
-from src.handlers.router import router
-from src.storage.rabbitmq import publish_message_with_response
-from src.states.states import MemeStates, MainStates
 from src.handlers.main_menu import main_menu
+from src.handlers.router import router
+from src.states.states import MainStates, MemeStates
+from src.storage.rabbitmq import publish_message_with_response
 
 
 @router.callback_query(

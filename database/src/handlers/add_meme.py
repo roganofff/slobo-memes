@@ -1,10 +1,10 @@
 import msgpack
 from aio_pika import IncomingMessage
 
-from src.services.meme import MemeService
 from src.schema.meme import AddMeme
-from src.utils.image import Image
+from src.services.meme import MemeService
 from src.storage.rabbitmq import publish_message
+from src.utils.image import Image
 
 
 async def add_meme(message: IncomingMessage) -> None:

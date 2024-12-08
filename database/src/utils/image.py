@@ -1,6 +1,7 @@
-from aiohttp import ClientSession
-from typing import Union, Self
 from types import MappingProxyType
+from typing import Optional, Self
+
+from aiohttp import ClientSession
 
 from config.settings import settings
 
@@ -43,13 +44,12 @@ class Image:
                 thumbnail_url = response['image']['thumb']['url']
         return Image(url, thumbnail_url)
 
-
     @classmethod
     async def upload(
         cls,
         session: ClientSession,
         **kwargs,
-    ) -> Union[dict, None]:
+    ) -> Optional[dict]:
         async with session.get(cls.__API_URL, **kwargs) as response:
             if response.status == 200:
                 return await response.json()

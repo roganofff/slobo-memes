@@ -1,13 +1,12 @@
 from aiogram import F
-from aiogram.types import CallbackQuery, Message, LinkPreviewOptions
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, LinkPreviewOptions, Message
 
 from src.handlers.router import router
+from src.keyboards.main_menu import keyboard
 from src.states import states
 from src.templates.env import render
-from src.keyboards.main_menu import keyboard
 from src.utils.image import Image
-
 
 default_flags = {
     'long_operation': 'typing',

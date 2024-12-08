@@ -1,15 +1,15 @@
 from aiogram import F
-from aiogram.types import CallbackQuery, Message, LinkPreviewOptions
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, LinkPreviewOptions, Message
 
 from src.handlers.router import router
-from src.states.states import MainStates, AddMemeStates, MemeStates
-from src.templates.env import render
+from src.keyboards.meme import keyboard
 from src.keyboards.request_meme import keyboard as request_keyboard
+from src.states.states import AddMemeStates, MainStates, MemeStates
+from src.storage.rabbitmq import publish_message_with_response
+from src.templates.env import render
 from src.utils.edit_or_send_message import edit_or_send_message
 from src.utils.image import Image
-from src.storage.rabbitmq import publish_message_with_response
-from src.keyboards.meme import keyboard
 
 
 @router.callback_query(

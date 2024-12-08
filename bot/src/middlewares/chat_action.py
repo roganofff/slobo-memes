@@ -1,8 +1,8 @@
 from typing import Any, Awaitable, Callable, Dict
 
 from aiogram import BaseMiddleware
-from aiogram.types import TelegramObject, Message, CallbackQuery
-from aiogram.dispatcher.flags import get_flag, extract_flags
+from aiogram.dispatcher.flags import get_flag
+from aiogram.types import CallbackQuery, Message, TelegramObject
 from aiogram.utils.chat_action import ChatActionSender
 
 
@@ -24,7 +24,7 @@ class ChatActionMiddleware(BaseMiddleware):
             return await handler(event, event_data)
         async with ChatActionSender(
             bot=event_data['bot'],
-            action=long_operation_type, 
+            action=long_operation_type,
             chat_id=chat_id
         ):
             return await handler(event, event_data)

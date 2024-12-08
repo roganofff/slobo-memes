@@ -1,12 +1,12 @@
-from aiogram.filters import CommandObject, CommandStart
+from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
-from src.handlers.router import router
-from src.templates.env import render
 from src.handlers.main_menu import main_menu_message
+from src.handlers.router import router
 from src.keyboards.start import keyboard
 from src.states.states import MainStates
+from src.templates.env import render
 
 
 @router.message(CommandStart())

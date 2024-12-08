@@ -1,8 +1,8 @@
 import msgpack
 from aio_pika import IncomingMessage
 
-from src.services.meme import MemeService
 from src.schema.meme import RandomMeme
+from src.services.meme import MemeService
 from src.storage.rabbitmq import publish_message
 
 

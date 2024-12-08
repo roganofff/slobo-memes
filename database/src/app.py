@@ -1,13 +1,15 @@
 import asyncio
+from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
-from contextlib import asynccontextmanager
-from fastapi import FastAPI
 import aio_pika
 import uvicorn
+from fastapi import FastAPI
 
+from src.handlers import (add_meme, change_visibility, delete_meme, list_saved,
+                          meme_saves, random_meme, rate_meme)
 from src.storage.rabbitmq import channel_pool
-from src.handlers import add_meme, random_meme, rate_meme, meme_saves, change_visibility, delete_meme, list_saved
+
 
 async def process_messages():
     async with channel_pool.acquire() as channel:
@@ -53,8 +55,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(docs_url='/swagger', lifespan=lifespan)
-    return app
+    return FastAPI(docs_url='/swagger', lifespan=lifespan)
 
 
 if __name__ == '__main__':

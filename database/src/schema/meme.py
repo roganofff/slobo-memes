@@ -1,4 +1,4 @@
-from typing import TypedDict, Union
+from typing import Optional, TypedDict
 
 
 class Meme(TypedDict):
@@ -9,7 +9,7 @@ class Meme(TypedDict):
     is_public: bool
     likes: int
     dislikes: int
-    user_rating: Union[bool, None]
+    user_rating: Optional[bool]
     is_saved: bool
     pagination: tuple[str | None, str | None]
 

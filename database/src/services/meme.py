@@ -1,28 +1,34 @@
 import uuid
 from typing import Optional
 
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.sql import select, func
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import func, select
 
 from src.models import Meme, Rating, Saved
 from src.schema.meme import Meme as MemeDict
-from src.utils.inject_database import Provide, inject
 from src.storage.database import get_db
+from src.utils.inject_database import Provide, inject
 
 
 class MemeService:
+    db_session = Provide(get_db)
+
     @staticmethod
     @inject
     async def __get_mark_count(
         meme: Meme,
         mark: bool,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> int:
-        statement = select(func.count()).where(
-            Rating.meme_id == meme.id,
-            Rating.is_like == mark,
-        ).select_from(Rating)
+        statement = (
+            select(func.count())
+            .where(
+                Rating.meme_id == meme.id,
+                Rating.is_like == mark,
+            )
+            .select_from(Rating)
+        )
         return (await session.execute(statement)).scalar()
 
     @staticmethod
@@ -35,7 +41,7 @@ class MemeService:
         user_rating: Optional[bool] = None,
         is_saved: Optional[bool] = None,
         pagination: tuple[str | None, str | None] = (None, None),
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> MemeDict:
         if likes is None:
             likes = await MemeService.__get_mark_count(meme, True)
@@ -43,7 +49,9 @@ class MemeService:
             dislikes = await MemeService.__get_mark_count(meme, False)
         if user_rating is None:
             user_rating = await session.execute(
-                select(Rating).where(Rating.meme_id == meme.id, Rating.user_id == user_id)
+                select(Rating).where(
+                    Rating.meme_id == meme.id, Rating.user_id == user_id
+                )
             )
             user_rating: Rating = user_rating.scalars().first()
             user_rating = user_rating.is_like if user_rating is not None else None
@@ -71,7 +79,7 @@ class MemeService:
         creator_id: int,
         description: str,
         image_url: str,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> MemeDict:
         new_meme = Meme(
             creator_id=creator_id,
@@ -100,14 +108,18 @@ class MemeService:
     async def get_random_meme(
         user_id: int,
         public_only: bool,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> Optional[MemeDict]:
         if public_only:
-            statement = select(Meme).where(Meme.is_public == True)
+            statement = select(Meme).where(Meme.is_public)
         else:
-            statement = select(Meme).where(Saved.user_id == user_id).join(
-                Saved,
-                Saved.meme_id == Meme.id,
+            statement = (
+                select(Meme)
+                .where(Saved.user_id == user_id)
+                .join(
+                    Saved,
+                    Saved.meme_id == Meme.id,
+                )
             )
         meme = await session.execute(statement.order_by(func.random()).limit(1))
         meme = meme.scalars().first()
@@ -121,12 +133,14 @@ class MemeService:
         meme_id: uuid.UUID,
         user_id: int,
         new_rating: bool,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> Optional[MemeDict]:
         meme = await session.get(Meme, meme_id)
         if not meme:
             return None
-        statement = select(Rating).where(Rating.meme_id == meme_id, Rating.user_id == user_id)
+        statement = select(Rating).where(
+            Rating.meme_id == meme_id, Rating.user_id == user_id
+        )
         rating = await session.execute(statement)
         rating = rating.scalars().first()
         if rating:
@@ -136,9 +150,7 @@ class MemeService:
             session.add(rating)
         await session.commit()
         return await MemeService.build_meme_response(
-            meme,
-            user_id,
-            user_rating=rating.is_like
+            meme, user_id, user_rating=rating.is_like
         )
 
     @staticmethod
@@ -146,12 +158,14 @@ class MemeService:
     async def remove_rating(
         meme_id: uuid.UUID,
         user_id: int,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> Optional[MemeDict]:
         meme = await session.get(Meme, meme_id)
         if not meme:
             return None
-        statement = select(Rating).where(Rating.meme_id == meme_id, Rating.user_id == user_id)
+        statement = select(Rating).where(
+            Rating.meme_id == meme_id, Rating.user_id == user_id
+        )
         rating = await session.execute(statement)
         rating = rating.scalars().first()
         if rating:
@@ -164,7 +178,7 @@ class MemeService:
     async def add_to_saved(
         meme_id: uuid.UUID,
         user_id: int,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> MemeDict:
         try:
             saved = Saved(meme_id=meme_id, user_id=user_id)
@@ -180,9 +194,11 @@ class MemeService:
     async def remove_from_saved(
         meme_id: uuid.UUID,
         user_id: int,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> MemeDict:
-        statement = select(Saved).where(Saved.meme_id == meme_id, Saved.user_id == user_id)
+        statement = select(Saved).where(
+            Saved.meme_id == meme_id, Saved.user_id == user_id
+        )
         saved = await session.execute(statement)
         saved = saved.scalars().first()
         if saved:
@@ -197,7 +213,7 @@ class MemeService:
         meme_id: uuid.UUID,
         user_id: int,
         new_visibility: bool,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> Optional[MemeDict]:
         statement = select(Meme).where(Meme.id == meme_id, Meme.creator_id == user_id)
         meme = await session.execute(statement)
@@ -213,7 +229,7 @@ class MemeService:
     async def get_saved_meme_neighbors(
         user_id: int,
         saved_id: str,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> tuple[str | None, str | None]:
         next_statement = (
             select(Saved.id)
@@ -233,14 +249,14 @@ class MemeService:
             next_result = str(next_result)
         if isinstance(prev_result, uuid.UUID):
             prev_result = str(prev_result)
-        return (prev_result, next_result)
+        return prev_result, next_result
 
     @staticmethod
     @inject
     async def get_saved_meme_by_id(
         user_id: int,
         saved_id: str,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> Optional[MemeDict]:
         statement = (
             select(Meme)
@@ -251,17 +267,19 @@ class MemeService:
         meme = result.scalars().first()
         if not meme:
             return None
-        neightbours = await MemeService.get_saved_meme_neighbors(
+        neighbours = await MemeService.get_saved_meme_neighbors(
             user_id,
             saved_id,
         )
-        return await MemeService.build_meme_response(meme, user_id, pagination=neightbours)
+        return await MemeService.build_meme_response(
+            meme, user_id, pagination=neighbours
+        )
 
     @staticmethod
     @inject
     async def get_first_saved_meme(
         user_id: int,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> Optional[str]:
         statement = (
             select(Saved.id)
@@ -278,7 +296,7 @@ class MemeService:
     async def delete_meme(
         meme_id: uuid.UUID,
         user_id: int,
-        session: AsyncSession = Provide(get_db),
+        session: AsyncSession = db_session,
     ) -> bool:
         statement = select(Meme).where(Meme.id == meme_id, Meme.creator_id == user_id)
         meme = await session.execute(statement)

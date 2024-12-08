@@ -1,29 +1,27 @@
 import asyncio
-import uvicorn
-
+import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
 from typing import AsyncGenerator
-from aiogram import Dispatcher, Bot, types
+
+import uvicorn
+from aiogram import Bot, Dispatcher, types
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from fastapi import FastAPI
 from starlette_context import plugins
 from starlette_context.middleware import RawContextMiddleware
 
 from config.settings import settings
-from src.bot import setup_dp, setup_bot
-from src.background_tasks import background_tasks
 from src.api import router as api_router
+from src.background_tasks import background_tasks
+from src.bot import setup_bot, setup_dp
 from src.handlers import router as bot_router
 from src.middlewares import chat_action, state
-
-import logging
 
 logging.basicConfig(level=logging.INFO)
 
 
 async def setup_app() -> tuple[Dispatcher, Bot]:
-    # storage = RedisStorage(redis=redis.setup_redis())
     dp = Dispatcher(storage=None)
     setup_dp(dp)
     dp.include_router(bot_router)

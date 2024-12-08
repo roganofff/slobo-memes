@@ -12,11 +12,11 @@ class Settings(BaseSettings):
     DB_RABBIT_DEFAULT_USER: str
     DB_RABBIT_DEFAULT_PASS: str
 
-    IMAGE_HOST_API_KEY:str
+    IMAGE_HOST_API_KEY: str
 
     @property
     def db_url(self) -> str:
-        protocol='postgresql+asyncpg'
+        protocol = 'postgresql+asyncpg'
         user_data = f'{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}'
         server_data = f'{self.POSTGRES_HOST}:{self.POSTGRES_PORT}'
         return f'{protocol}://{user_data}@{server_data}/{self.POSTGRES_DB}'

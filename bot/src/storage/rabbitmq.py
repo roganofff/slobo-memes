@@ -1,8 +1,8 @@
 import asyncio
 import uuid
 
-import msgpack
 import aio_pika
+import msgpack
 from aio_pika.abc import AbstractRobustConnection
 from aio_pika.pool import Pool
 
