@@ -16,7 +16,7 @@ from src.bot import get_bot, get_dp
 
 @router.post('/bot')
 async def bot_webhook(request: Request) -> JSONResponse:
-    """Request a data from telegram
+    """Request a data from telegram.
 
     Args:
         request: Request - HTTP request.

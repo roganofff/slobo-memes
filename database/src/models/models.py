@@ -6,7 +6,7 @@ from sqlalchemy import (BigInteger, Boolean, ForeignKey, Index, String, Text,
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from database.src.models.meta import Base
+from src.models.meta import Base
 
 
 @dataclass

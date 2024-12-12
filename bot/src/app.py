@@ -11,7 +11,7 @@ from fastapi import FastAPI
 from starlette_context import plugins
 from starlette_context.middleware import RawContextMiddleware
 
-from bot.config.settings import settings
+from config.settings import settings
 from src.api import router as api_router
 from src.background_tasks import background_tasks
 from src.bot import setup_bot, setup_dp

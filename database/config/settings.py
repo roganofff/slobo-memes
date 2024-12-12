@@ -1,3 +1,4 @@
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -24,10 +25,9 @@ class Settings(BaseSettings):
     @property
     def rabbit_url(self) -> str:
         auth = f'{self.DB_RABBIT_DEFAULT_USER}:{self.DB_RABBIT_DEFAULT_PASS}'
-        return f'amqp://{auth}@rabbitmq:{self.DB_RABBIT_PORT}/'
+        return f'amqp://{auth}@127.0.0.1:{self.DB_RABBIT_PORT}/'
 
-    class Config:
-        env_file = 'config/.env'
+    model_config = ConfigDict(env_file='config/.env')
 
 
 settings = Settings()

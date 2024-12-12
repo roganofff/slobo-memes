@@ -2,6 +2,7 @@
 
 from typing import Optional
 
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 
@@ -33,10 +34,7 @@ class Settings(BaseSettings):
         auth = f'{self.BOT_RABBIT_DEFAULT_USER}:{self.BOT_RABBIT_DEFAULT_PASS}'
         return f'amqp://{auth}@rabbitmq:{self.BOT_RABBIT_PORT}/'
 
-    class Config:
-        """Environment configuration class."""
-
-        env_file = 'config/.env'
+    model_config = ConfigDict(env_file='config/.env')
 
 
 settings = Settings()
