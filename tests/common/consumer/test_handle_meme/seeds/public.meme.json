@@ -1,0 +1,18 @@
+[
+    {
+        "creator_id": 111111,
+        "image_url": "img_url",
+        "description": "aaaaa",
+        "is_public": true,
+        "ratings": [],
+        "saved_by": []
+    },
+    {
+        "creator_id": 222222,
+        "image_url": "url_image",
+        "description": "bbbbb",
+        "is_public": false,
+        "ratings": [],
+        "saved_by": []
+    }
+]
