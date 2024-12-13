@@ -1,15 +1,15 @@
 from typing import AsyncGenerator
 from asgi_lifespan import LifespanManager
 from fastapi import FastAPI
-from bot.src.app import create_app
+from src.app import create_app
 import pytest
 import pytest_asyncio
 
 from httpx import AsyncClient
 from alembic import command
 from alembic.config import Config
-from database.src.models.meta import Base
-from tests.config import settings
+from src.models.meta import Base
+from config import settings
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession, AsyncEngine
 
 
