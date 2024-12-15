@@ -4,3 +4,4 @@ __pycache__/
 *.service
 venv
 *.idea*
+*.pytest_cache*
