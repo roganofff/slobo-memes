@@ -60,18 +60,18 @@ jobs:
             poetry lock 
             poetry install --no-root
             poetry run pytest .
-  # linter:
-  #   name: Linter
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Download Python
-  #       uses: actions/setup-python@v2
-  #       with:
-  #         python-version: 3.12.6
-  #     - name: Download Dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip
-  #         pip install flake8==6.1.0 wemake-python-styleguide==0.18.0 flake8-bandit=4.1.1
-  #     - name: Flake8
-  #       run: flake8 .
+  linter:
+    name: Linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12.6
+      - name: Download Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8==6.1.0 wemake-python-styleguide==0.18.0 flake8-bandit=4.1.1
+      - name: Flake8
+        run: flake8 .
