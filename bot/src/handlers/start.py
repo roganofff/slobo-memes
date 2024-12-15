@@ -13,7 +13,7 @@ from src.templates.env import render
 async def start(message: Message, state: FSMContext) -> None:
     await message.answer(
         text=render('start.jinja2'),
-        reply_markup=await keyboard()
+        reply_markup=await keyboard(),
     )
     await main_menu_message(message, state)
     await state.set_state(MainStates.main_menu)

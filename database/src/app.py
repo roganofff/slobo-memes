@@ -12,8 +12,7 @@ from src.storage.rabbitmq import channel_pool
 
 
 async def process_messages():
-    async with channel_pool.acquire() as channel:
-        channel: aio_pika.Channel
+    async with channel_pool.acquire() as channel: # type: aio_pika.Channel
         exchange = await channel.declare_exchange('meme_exchange', aio_pika.ExchangeType.DIRECT)
         add_meme_queue = await channel.declare_queue('add_meme_queue', durable=True)
         await add_meme_queue.bind(exchange, routing_key='add_meme')
@@ -62,7 +61,7 @@ if __name__ == '__main__':
     uvicorn.run(
         'src.app:create_app',
         factory=True,
-        host='0.0.0.0',
+        host='127.0.0.1',
         port=8001,
         workers=1,
     )

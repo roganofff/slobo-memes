@@ -33,7 +33,7 @@ async def setup_app() -> tuple[Dispatcher, Bot]:
     bot = Bot(token=settings.BOT_TOKEN, default=default)
     await bot.set_my_commands(
         [
-            types.BotCommand(command='start', description='Перезапустить бота')
+            types.BotCommand(command='start', description='Перезапустить бота'),
         ],
         scope=types.BotCommandScopeAllPrivateChats(),
     )
@@ -69,7 +69,7 @@ if __name__ == '__main__':
         uvicorn.run(
             'src.app:create_app',
             factory=True,
-            host='0.0.0.0',
+            host='127.0.0.1',
             port=settings.BOT_FASTAPI_PORT,
             workers=1,
         )

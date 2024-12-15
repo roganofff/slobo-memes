@@ -20,7 +20,7 @@ async def get_saved(
     }
     if saved_id:
         routing_key = 'get_saved'
-        message['saved_id'] = saved_id
+        message['saved_id'] = int(saved_id)
     else:
         routing_key = 'first_saved'
     publish_result = await publish_message_with_response(
@@ -34,7 +34,7 @@ async def get_saved(
     message_args = {
         'text': render(
             'meme.jinja2',
-            description=publish_result['description']
+            description=publish_result['description'],
         ),
         'reply_markup': await keyboard(
             is_owner=publish_result['creator_id'] == query.from_user.id,
@@ -59,7 +59,7 @@ async def get_saved(
             'meme_id': publish_result['id'],
             'next_id': publish_result['pagination'][1],
             'prev_id': publish_result['pagination'][0],
-        }
+        },
     )
 
 
@@ -87,7 +87,7 @@ async def next_saved(query: CallbackQuery, state: FSMContext) -> None:
     await get_saved(
         query,
         state,
-        data.get('next_id')
+        data.get('next_id'),
     )
 
 
@@ -104,5 +104,5 @@ async def prev_saved(query: CallbackQuery, state: FSMContext) -> None:
     await get_saved(
         query,
         state,
-        data.get('prev_id')
+        data.get('prev_id'),
     )

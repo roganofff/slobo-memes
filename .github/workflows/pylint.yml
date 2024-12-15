@@ -1,0 +1,98 @@
+name: Check project
+on: [push]
+jobs:
+  test_bot:
+    name: Bot test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12.6
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.8.5
+      - name: Download dependencies and run tests
+        env:
+          BOT_TOKEN: BOT_TOKEN
+          BOT_WEBHOOK_PATH: /bot
+          BOT_FASTAPI_HOST: 
+          BOT_FASTAPI_PORT: 8000
+          BOT_RABBIT_PORT: 5672
+          BOT_RABBIT_DEFAULT_USER: admin
+          BOT_RABBIT_DEFAULT_PASS: admin
+          IMAGE_HOST_API_KEY: IMAGE_HOST_API_KEY
+        run: |
+          python -m pip install --upgrade pip
+          cd ./bot
+          poetry lock 
+          poetry install --no-root
+          poetry run pytest .
+  test_database:
+    name: Database test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12.6
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.8.5
+      - name: Download dependencies and run tests
+        env:
+          POSTGRES_HOST: 127.0.0.1
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          DB_RABBIT_PORT: 5672
+          DB_RABBIT_DEFAULT_USER: admin
+          DB_RABBIT_DEFAULT_PASS: admin
+          IMAGE_HOST_API_KEY: IMAGE_HOST_API_KEY
+        run: |
+            python -m pip install --upgrade pip
+            cd ./database
+            poetry lock 
+            poetry install --no-root
+            poetry run pytest .
+  linter:
+    name: Linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12.6
+      - name: Download dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8==6.1.0 wemake-python-styleguide==0.18.0 flake8-bandit==4.1.1
+      - name: Flake8
+        run: |
+          chmod +x ./scripts/flake8_walk.sh
+          ./scripts/flake8_walk.sh
+  mypy:
+    name: Mypy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.12.6
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.8.5
+      - name: Download dependencies and run mypy
+        run: |
+          python -m pip install --upgrade pip
+          poetry lock 
+          poetry install --no-root
+          poetry run mypy .

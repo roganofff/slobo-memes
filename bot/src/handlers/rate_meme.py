@@ -15,7 +15,7 @@ from src.utils.edit_or_send_message import edit_or_send_message
 async def rate_meme(
     query: CallbackQuery,
     state: FSMContext,
-    rating: Optional[bool] = None
+    rating: Optional[bool] = None,
 ) -> None:
     data = await state.get_data()
     public_only = data.get('public_only')
@@ -45,7 +45,7 @@ async def rate_meme(
     message_args = {
         'text': render(
             'meme.jinja2',
-            description=publish_result['description']
+            description=publish_result['description'],
         ),
         'reply_markup': await keyboard(
             is_owner=publish_result['creator_id'] == query.from_user.id,

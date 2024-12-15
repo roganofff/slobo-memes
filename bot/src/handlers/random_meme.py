@@ -1,3 +1,4 @@
+# mypy: disable-error-code=no-redef
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, LinkPreviewOptions
@@ -9,9 +10,8 @@ from src.storage.rabbitmq import publish_message_with_response
 from src.templates.env import render
 from src.utils.edit_or_send_message import edit_or_send_message
 
-
 default_flags = {
-    'new_state': MemeStates.show
+    'new_state': MemeStates.show,
 }
 
 
@@ -30,7 +30,7 @@ async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool
     message_args = {
         'text': render(
             'meme.jinja2',
-            description=publish_result['description']
+            description=publish_result['description'],
         ),
         'reply_markup': await keyboard(
             is_owner=publish_result['creator_id'] == query.from_user.id,
@@ -39,7 +39,7 @@ async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool
             likes=publish_result['likes'],
             dislikes=publish_result['dislikes'],
             user_rating=publish_result['user_rating'],
-            random_type='public' if public_only else 'saved'
+            random_type='public' if public_only else 'saved',
         ),
         'chat_id': query.message.chat.id,
         'link_preview_options': LinkPreviewOptions(
@@ -53,7 +53,7 @@ async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool
         {
             'meme_id': publish_result['id'],
             'public_only': public_only,
-        }
+        },
     )
 
 

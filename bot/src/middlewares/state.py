@@ -11,7 +11,7 @@ class StateMiddleware(BaseMiddleware):
         self,
         handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        event_data: Dict[str, Any]
+        event_data: Dict[str, Any],
     ) -> Any:
         state: FSMContext = event_data['state']
         new_state = get_flag(event_data, 'new_state')

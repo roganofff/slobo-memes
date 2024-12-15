@@ -12,12 +12,12 @@ async def keyboard(
     dislikes: int,
     user_rating: Optional[bool] = None,
     random_type: Optional[str] = None,
-    pagination: tuple[str, str] = None,
+    pagination: Optional[tuple[str, str]] = None,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(
         text='Назад',
-        callback_data='main_menu'
+        callback_data='main_menu',
     )
     if is_saved:
         personal_text = 'Удалить из СВОих'
@@ -26,9 +26,9 @@ async def keyboard(
         personal_text = 'Добавить к себе'
         personal_data = 'add_to_saved'
     builder.button(
-            text=personal_text,
-            callback_data=personal_data,
-        )
+        text=personal_text,
+        callback_data=personal_data,
+    )
     if is_public:
         if user_rating:
             like_text = f'[Нрав {likes}]'
