@@ -16,7 +16,7 @@ from tests.mocking.rabbit import (MockChannel, MockChannelPool, MockExchange,
 @pytest_asyncio.fixture()
 async def db_session(
     app: FastAPI,
-    monkeypatch: pytest.MonkeyPatch
+    monkeypatch: pytest.MonkeyPatch,
 ) -> AsyncGenerator[AsyncSession, None]:
     async with engine.begin() as conn:
         session_maker = async_sessionmaker(bind=conn, class_=AsyncSession)

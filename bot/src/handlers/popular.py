@@ -1,20 +1,20 @@
 from aiogram import F
-from aiogram.types import CallbackQuery, LinkPreviewOptions
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, LinkPreviewOptions
 
 from src.handlers.router import router
-from src.storage.rabbitmq import publish_message_with_response
-from src.utils.edit_or_send_message import edit_or_send_message
-from src.templates.env import render
 from src.keyboards.meme import keyboard
-from src.states.states import MemeStates, MainStates
+from src.states.states import MainStates, MemeStates
+from src.storage.rabbitmq import publish_message_with_response
+from src.templates.env import render
+from src.utils.edit_or_send_message import edit_or_send_message
 
 
 @router.callback_query(
     MainStates.main_menu,
     F.data == 'popular',
     flags={
-        'new_state': MemeStates.show
+        'new_state': MemeStates.show,
     },
 )
 async def popular_meme(query: CallbackQuery, state: FSMContext) -> None:
@@ -31,7 +31,7 @@ async def popular_meme(query: CallbackQuery, state: FSMContext) -> None:
     message_args = {
         'text': render(
             'meme.jinja2',
-            description=publish_result['description']
+            description=publish_result['description'],
         ),
         'reply_markup': await keyboard(
             is_owner=publish_result['creator_id'] == query.from_user.id,
@@ -52,5 +52,5 @@ async def popular_meme(query: CallbackQuery, state: FSMContext) -> None:
     await state.set_data(
         {
             'meme_id': publish_result['id'],
-        }
+        },
     )

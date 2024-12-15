@@ -21,7 +21,7 @@ async def request_meme(query: CallbackQuery, state: FSMContext) -> None:
     await query.answer()
     message = await query.message.edit_text(
         text=render('request_meme.jinja2'),
-        reply_markup=await request_keyboard()
+        reply_markup=await request_keyboard(),
     )
     await state.update_data(request_message=message.message_id)
 
@@ -64,7 +64,7 @@ async def process_meme(message: Message, state: FSMContext) -> None:
     message_args = {
         'text': render(
             'meme.jinja2',
-            description=publish_result['description']
+            description=publish_result['description'],
         ),
         'reply_markup': await keyboard(
             is_owner=publish_result['creator_id'] == message.from_user.id,
@@ -85,6 +85,6 @@ async def process_meme(message: Message, state: FSMContext) -> None:
     await edit_or_send_message(message_args, request_message)
     await state.set_data(
         {
-            'meme_id': publish_result['id']
-        }
+            'meme_id': publish_result['id'],
+        },
     )

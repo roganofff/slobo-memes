@@ -48,15 +48,15 @@ class MemeService:
             async for session in get_db():
                 user_rating = await session.execute(
                     select(Rating).where(
-                        Rating.meme_id == meme.id, Rating.user_id == user_id
-                    )
+                        Rating.meme_id == meme.id, Rating.user_id == user_id,
+                    ),
                 )
                 user_rating: Rating = user_rating.scalars().first()
             user_rating = user_rating.is_like if user_rating is not None else None
         if is_saved is None:
             async for session in get_db():
                 is_saved = await session.execute(
-                    select(Saved).where(Saved.meme_id == meme.id, Saved.user_id == user_id)
+                    select(Saved).where(Saved.meme_id == meme.id, Saved.user_id == user_id),
                 )
                 is_saved = is_saved.scalars().first() is not None
         return MemeDict(
@@ -138,7 +138,7 @@ class MemeService:
         if not meme:
             return None
         statement = select(Rating).where(
-            Rating.meme_id == meme_id, Rating.user_id == user_id
+            Rating.meme_id == meme_id, Rating.user_id == user_id,
         )
         async for session in get_db():
             rating = await session.execute(statement)
@@ -150,7 +150,7 @@ class MemeService:
                 session.add(rating)
             await session.commit()
         return await MemeService.build_meme_response(
-            meme, user_id, user_rating=rating.is_like
+            meme, user_id, user_rating=rating.is_like,
         )
 
     @staticmethod
@@ -164,7 +164,7 @@ class MemeService:
         if not meme:
             return None
         statement = select(Rating).where(
-            Rating.meme_id == meme_id, Rating.user_id == user_id
+            Rating.meme_id == meme_id, Rating.user_id == user_id,
         )
         async for session in get_db():
             rating = await session.execute(statement)
@@ -197,7 +197,7 @@ class MemeService:
         user_id: int,
     ) -> MemeDict:
         statement = select(Saved).where(
-            Saved.meme_id == meme_id, Saved.user_id == user_id
+            Saved.meme_id == meme_id, Saved.user_id == user_id,
         )
         async for session in get_db():
             saved = await session.execute(statement)
@@ -273,7 +273,7 @@ class MemeService:
             saved_id,
         )
         return await MemeService.build_meme_response(
-            meme, user_id, pagination=neighbours
+            meme, user_id, pagination=neighbours,
         )
 
     @staticmethod

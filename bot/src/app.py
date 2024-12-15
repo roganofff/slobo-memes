@@ -33,7 +33,7 @@ async def setup_app() -> tuple[Dispatcher, Bot]:
     bot = Bot(token=settings.BOT_TOKEN, default=default)
     await bot.set_my_commands(
         [
-            types.BotCommand(command='start', description='Перезапустить бота')
+            types.BotCommand(command='start', description='Перезапустить бота'),
         ],
         scope=types.BotCommandScopeAllPrivateChats(),
     )

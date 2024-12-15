@@ -1,9 +1,10 @@
 from typing import AsyncGenerator
+
+import pytest
+import pytest_asyncio
 from asgi_lifespan import LifespanManager
 from fastapi import FastAPI
 from httpx import AsyncClient
-import pytest
-import pytest_asyncio
 
 from src.app import create_app
 

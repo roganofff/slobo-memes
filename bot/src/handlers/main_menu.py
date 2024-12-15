@@ -10,7 +10,7 @@ from src.utils.image import Image
 
 default_flags = {
     'long_operation': 'typing',
-    'new_state': states.MainStates.main_menu
+    'new_state': states.MainStates.main_menu,
 }
 
 

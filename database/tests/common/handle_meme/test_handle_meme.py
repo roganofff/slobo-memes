@@ -31,7 +31,7 @@ async def test_handle_meme(mock_exchange: MockExchange) -> None:
         )
 
         expected_calls.append(
-            ('publish', (expected_message,), {'routing_key': expected_routing_key})
+            ('publish', (expected_message,), {'routing_key': expected_routing_key}),
         )
 
         mock_exchange.assert_has_calls(expected_calls, any_order=True)

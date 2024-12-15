@@ -23,14 +23,22 @@ class Settings(BaseSettings):
 
     @property
     def bot_webhook_url(self) -> str:
-        """Return the bot webhook URL."""
+        """Return the bot webhook URL.
+
+        Returns:
+            str: URL of the bot webhook.
+        """
         return (
             f'{self.BOT_FASTAPI_HOST}:{self.BOT_FASTAPI_PORT}/{self.BOT_WEBHOOK_PATH}'
         )
 
     @property
     def rabbit_url(self) -> str:
-        """Return the RabbitMQ URL with authentication."""
+        """Return the RabbitMQ URL with authentication.
+
+        Returns:
+            str: URL of the RabbitMQ.
+        """
         auth = f'{self.BOT_RABBIT_DEFAULT_USER}:{self.BOT_RABBIT_DEFAULT_PASS}'
         return f'amqp://{auth}@rabbitmq:{self.BOT_RABBIT_PORT}/'
 

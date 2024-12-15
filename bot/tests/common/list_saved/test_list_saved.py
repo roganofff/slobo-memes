@@ -1,11 +1,11 @@
 from datetime import datetime
+
 import pytest
-
-from aiogram.types import User, CallbackQuery, Chat, Message
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Chat, Message, User
 
-from tests.mocking.rabbit import MockChannelPool, MockExchange
 from src.handlers.list_saved import get_saved
+from tests.mocking.rabbit import MockChannelPool, MockExchange
 
 
 @pytest.mark.asyncio()
@@ -13,7 +13,7 @@ from src.handlers.list_saved import get_saved
 async def test_list_saved(
     mocker,
     mock_exchange: MockExchange,
-    mock_channel_pool: MockChannelPool
+    mock_channel_pool: MockChannelPool,
 ) -> None:
     query = CallbackQuery(
         id='test_query',
@@ -25,7 +25,7 @@ async def test_list_saved(
             text='Test message',
         ),
         chat_instance='test_chat_instance',
-        data='list_saved'
+        data='list_saved',
     )
     state = mocker.AsyncMock(spec=FSMContext)
 
@@ -34,5 +34,5 @@ async def test_list_saved(
     async with mock_channel_pool.acquire():
         mock_exchange.assert_has_calls([
             'first_saved',
-            {'user_id': 123}
+            {'user_id': 123},
         ])

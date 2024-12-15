@@ -1,12 +1,15 @@
-from collections import deque
-from unittest.mock import AsyncMock
 import uuid
+from collections import deque
+from typing import Any
+from unittest.mock import AsyncMock
+
 import aio_pika
 import msgpack
 import pytest
 
 from src import bot
-from tests.mocking.rabbit import MockChannel, MockChannelPool, MockExchange, MockQueue
+from tests.mocking.rabbit import (MockChannel, MockChannelPool, MockExchange,
+                                  MockQueue)
 
 
 @pytest.fixture(autouse=True)
@@ -31,13 +34,13 @@ def mock_channel_pool(mock_exchange) -> MockChannelPool:
 @pytest.fixture
 def mock_publish_and_send_methods(
     monkeypatch: pytest.MonkeyPatch,
-    mock_channel_pool: MockChannelPool
+    mock_channel_pool: MockChannelPool,
 ) -> None:
-    async def mock_publish_message_with_response(routing_key, message):
+    async def mock_publish_message_with_response(routing_key, message) -> dict[str, Any]:
         async with mock_channel_pool.acquire() as channel:
             exchange = await channel.declare_exchange(
                 'meme_exchange',
-                aio_pika.ExchangeType.DIRECT
+                aio_pika.ExchangeType.DIRECT,
             )
             callback_queue = await channel.declare_queue(exclusive=True)
             await callback_queue.bind(exchange, routing_key=callback_queue.name)
@@ -68,8 +71,8 @@ def mock_publish_and_send_methods(
         mock_publish_message_with_response,
     )
 
-    async def mock_edit_or_send_message(message_args, message_id):
-        None
+    async def mock_edit_or_send_message(message_args, message_id) -> None:
+        return
 
     monkeypatch.setattr(
         'src.handlers.list_saved.edit_or_send_message',
