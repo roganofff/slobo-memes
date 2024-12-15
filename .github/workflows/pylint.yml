@@ -72,6 +72,6 @@ jobs:
       - name: Download Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8==6.1.0 wemake-python-styleguide==0.18.0 flake8-bandit=4.1.1
+          pip install flake8==6.1.0 wemake-python-styleguide==0.18.0 flake8-bandit==4.1.1
       - name: Flake8
         run: flake8 .
