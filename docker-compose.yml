@@ -3,6 +3,11 @@ services:
     image: rabbitmq:management
     container_name: rabbitmq
     restart: unless-stopped
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 3s
+      timeout: 10s
+      retries: 3
     ports:
       - 127.0.0.1:${RABBIT_PORT}:5672
       - ${RABBIT_WEB_PORT}:15672
@@ -44,7 +49,7 @@ services:
       postgres:
         condition: service_healthy
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
     env_file:
       - database/config/.env
 
