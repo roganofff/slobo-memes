@@ -10,7 +10,11 @@ from src.handlers.list_saved import get_saved
 
 @pytest.mark.asyncio()
 @pytest.mark.usefixtures('mock_publish_and_send_methods')
-async def test_list_saved(mocker, mock_exchange: MockExchange, mock_channel_pool: MockChannelPool) -> None:
+async def test_list_saved(
+    mocker,
+    mock_exchange: MockExchange,
+    mock_channel_pool: MockChannelPool
+) -> None:
     query = CallbackQuery(
         id='test_query',
         from_user=User(id=123, is_bot=False, first_name='Test'),

@@ -12,7 +12,7 @@ from tests.mocking.rabbit import MockChannel, MockChannelPool, MockExchange, Moc
 @pytest.fixture(autouse=True)
 def mock_bot_dp(monkeypatch: pytest.MonkeyPatch) -> AsyncMock:
     mock = AsyncMock()
-    monkeypatch.setattr(bot, 'get_dp', mock) # bot.dp -> mock
+    monkeypatch.setattr(bot, 'get_dp', mock)
     return mock
 
 
@@ -29,10 +29,16 @@ def mock_channel_pool(mock_exchange) -> MockChannelPool:
 
 
 @pytest.fixture
-def mock_publish_and_send_methods(monkeypatch: pytest.MonkeyPatch, mock_channel_pool: MockChannelPool):
+def mock_publish_and_send_methods(
+    monkeypatch: pytest.MonkeyPatch,
+    mock_channel_pool: MockChannelPool
+) -> None:
     async def mock_publish_message_with_response(routing_key, message):
         async with mock_channel_pool.acquire() as channel:
-            exchange = await channel.declare_exchange('meme_exchange', aio_pika.ExchangeType.DIRECT)
+            exchange = await channel.declare_exchange(
+                'meme_exchange',
+                aio_pika.ExchangeType.DIRECT
+            )
             callback_queue = await channel.declare_queue(exclusive=True)
             await callback_queue.bind(exchange, routing_key=callback_queue.name)
 
@@ -43,7 +49,7 @@ def mock_publish_and_send_methods(monkeypatch: pytest.MonkeyPatch, mock_channel_
                 ),
                 routing_key=routing_key,
             )
-    
+
         return {
             'description': 'Test description',
             'creator_id': 123,

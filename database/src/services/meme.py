@@ -2,13 +2,12 @@ import uuid
 from typing import Optional
 
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import func, select
 
 from src.models import Meme, Rating, Saved
 from src.schema.meme import Meme as MemeDict
 from src.storage.database import get_db
-from src.utils.inject_database import Provide, inject
+from src.utils.inject_database import inject
 
 
 class MemeService:

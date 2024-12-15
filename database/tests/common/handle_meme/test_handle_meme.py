@@ -1,12 +1,13 @@
-from collections import deque
 import uuid
+from collections import deque
 
 import aio_pika
 import msgpack
 import pytest
 
 from src.services.meme import MemeService
-from tests.mocking.rabbit import MockChannel, MockChannelPool, MockExchange, MockQueue
+from tests.mocking.rabbit import (MockChannel, MockChannelPool, MockExchange,
+                                  MockQueue)
 
 
 @pytest.mark.asyncio()

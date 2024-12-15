@@ -1,16 +1,13 @@
 from typing import AsyncGenerator
-from asgi_lifespan import LifespanManager
-from fastapi import FastAPI
-from src.app import create_app
-import pytest
-import pytest_asyncio
 
-from httpx import AsyncClient
+import pytest_asyncio
+from sqlalchemy.ext.asyncio import (AsyncEngine, AsyncSession,
+                                    async_sessionmaker, create_async_engine)
+
 from alembic import command
 from alembic.config import Config
-from src.models.meta import Base
 from config import settings
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, AsyncSession, AsyncEngine
+from src.models.meta import Base
 
 
 @pytest_asyncio.fixture(scope='session')
@@ -24,7 +21,7 @@ async def db_engine() -> AsyncGenerator[AsyncEngine, None]:
         command.upgrade(alembic_cfg, 'head')
 
     yield engine
-    
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
     await engine.dispose()
