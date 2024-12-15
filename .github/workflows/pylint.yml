@@ -2,7 +2,7 @@ name: Check project
 on: [push]
 jobs:
   test_bot:
-    name: Linter
+    name: Bot test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,10 +20,9 @@ jobs:
           cd ./bot
           poetry lock 
           poetry install --no-root
-          poetry shell
           pytest .
   test_database:
-    name: Linter
+    name: Database test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +40,6 @@ jobs:
             cd ./database
             poetry lock 
             poetry install --no-root
-            poetry shell
             pytest .
   # linter:
   #   name: Linter
