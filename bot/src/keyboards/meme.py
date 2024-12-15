@@ -12,7 +12,7 @@ async def keyboard(
     dislikes: int,
     user_rating: Optional[bool] = None,
     random_type: Optional[str] = None,
-    pagination: tuple[str, str] = None,
+    pagination: Optional[tuple[str, str]] = None,
 ) -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(

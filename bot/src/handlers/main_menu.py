@@ -1,6 +1,6 @@
 from aiogram import F
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, LinkPreviewOptions, Message
+from aiogram.types import CallbackQuery, LinkPreviewOptions, Message, InaccessibleMessage
 
 from src.handlers.router import router
 from src.keyboards.main_menu import keyboard
@@ -66,4 +66,6 @@ async def main_menu_message(message: Message, state: FSMContext) -> None:
 async def main_menu_callback(query: CallbackQuery, state: FSMContext) -> None:
     await state.set_data({})
     await query.answer()
+    if query.message is None or isinstance(query.message, InaccessibleMessage):
+        return
     await main_menu(query.message, query)

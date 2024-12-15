@@ -1,9 +1,9 @@
+# mypy: disable-error-code=call-arg
 """Config module."""
 
 from typing import Optional
 
-from pydantic import ConfigDict
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -42,7 +42,7 @@ class Settings(BaseSettings):
         auth = f'{self.BOT_RABBIT_DEFAULT_USER}:{self.BOT_RABBIT_DEFAULT_PASS}'
         return f'amqp://{auth}@rabbitmq:{self.BOT_RABBIT_PORT}/'
 
-    model_config = ConfigDict(env_file='config/.env')
+    model_config = SettingsConfigDict(env_file='config/.env')
 
 
 settings = Settings()

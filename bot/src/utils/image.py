@@ -33,7 +33,7 @@ class Image:
         return self.__thumbnail_url
 
     @classmethod
-    async def get_object(cls, source: str) -> Self:
+    async def get_object(cls, source: str) -> 'Image':
         url = ''
         thumbnail_url = ''
         async with ClientSession() as session:

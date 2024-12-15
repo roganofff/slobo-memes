@@ -1,3 +1,4 @@
+# mypy: disable-error-code=import-not-found
 from src.handlers.add_meme import router
 from src.handlers.change_visibility import router
 from src.handlers.delete_meme import router

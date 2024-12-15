@@ -1,3 +1,4 @@
+# mypy: disable-error-code=no-redef
 import uuid
 from typing import Optional
 
@@ -52,7 +53,7 @@ class MemeService:
                     ),
                 )
                 user_rating: Rating = user_rating.scalars().first()
-            user_rating = user_rating.is_like if user_rating is not None else None
+            user_rating = user_rating.is_like if user_rating is not None else None # type: ignore[attr-defined]
         if is_saved is None:
             async for session in get_db():
                 is_saved = await session.execute(
@@ -291,6 +292,7 @@ class MemeService:
             result = (await session.execute(statement)).scalar()
         if result:
             return await MemeService.get_saved_meme_by_id(user_id, result)
+        return None
 
     @staticmethod
     @inject

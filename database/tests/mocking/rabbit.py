@@ -1,6 +1,6 @@
 from collections import deque
 from dataclasses import dataclass
-from typing import Iterator
+from typing import Any, Generator, Iterator
 from unittest.mock import AsyncMock
 
 import aio_pika
@@ -23,7 +23,7 @@ class MockChannel:
     def __aenter__(self) -> 'MockChannel':
         return self
 
-    def __await__(self) -> 'MockChannel':
+    def __await__(self) -> Generator[Any, None, 'MockChannel']:
         yield
         return self
 
@@ -53,7 +53,7 @@ class MockQueueIterator:
     def __aenter__(self) -> 'MockQueueIterator':
         return self
 
-    def __await__(self) -> 'MockQueueIterator':
+    def __await__(self) -> Generator[Any, None, 'MockQueueIterator']:
         yield
         return self
 
@@ -79,14 +79,14 @@ class MockQueue:
 
 
 class MockMessageProcess:
-    def __aenter__(self) -> 'MockQueueIterator':
+    def __aenter__(self) -> 'MockMessageProcess':
         return self
 
-    def __await__(self) -> 'MockQueueIterator':
+    def __await__(self) -> Generator[Any, None, 'MockMessageProcess']:
         yield
         return self
 
-    def __aexit__(self, exc_type, exc_val, exc_tb) -> 'MockQueueIterator':
+    def __aexit__(self, exc_type, exc_val, exc_tb) -> 'MockMessageProcess':
         return self
 
 
