@@ -23,7 +23,7 @@ async def test_handle_meme(mock_exchange: MockExchange) -> None:
         callback_queue = await channel.declare_queue(exclusive=True)
         await callback_queue.bind(exchange, routing_key=callback_queue.name)
         meme = await MemeService.add_meme(creator_id=1, description='ccc', image_url='ccc')
-        
+
         expected_message = aio_pika.Message(
             msgpack.packb(meme),
             correlation_id=str(uuid.uuid4()),

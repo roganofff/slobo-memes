@@ -35,15 +35,3 @@ async def db_session(db_engine):
     Session = async_sessionmaker(bind=db_engine, class_=AsyncSession)
     async with Session() as session:
         yield session
-
-
-@pytest.fixture(scope='session')
-def app() -> FastAPI:
-    return create_app()
-
-
-@pytest_asyncio.fixture
-async def test_client() -> AsyncGenerator[AsyncEngine, None]:
-    async with LifespanManager(app):
-        async with AsyncClient(app=app, base_url='http://localhost') as client:
-            yield client
