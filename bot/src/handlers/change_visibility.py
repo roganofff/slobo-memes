@@ -32,7 +32,7 @@ async def change_visibility(query: CallbackQuery, state: FSMContext, new_visibil
     message_args = {
         'text': render(
             'meme.jinja2',
-            description=publish_result['description']
+            description=publish_result['description'],
         ),
         'reply_markup': await keyboard(
             is_owner=publish_result['creator_id'] == query.from_user.id,

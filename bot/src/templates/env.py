@@ -1,17 +1,17 @@
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 from aiogram.utils.markdown import hide_link
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 env = Environment(
     loader=PackageLoader('src', 'templates'),
-    autoescape=select_autoescape()
+    autoescape=select_autoescape(),
 )
 
 
 def render(
     template_name: str,
-    image_url: str = None,
+    image_url: Optional[str] = None,
     **kwargs: Union[int, str, dict[str, Any]],
 ) -> str:
     rendered = env.get_template(template_name).render(**kwargs)

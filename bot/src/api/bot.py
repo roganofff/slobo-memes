@@ -1,6 +1,5 @@
 """Module for responses from telegram via webhook."""
-import asyncio
-from asyncio import Task
+from asyncio import Task, create_task
 from typing import Any
 
 from aiogram.methods.base import TelegramMethod
@@ -16,7 +15,7 @@ from src.bot import get_bot, get_dp
 
 @router.post('/bot')
 async def bot_webhook(request: Request) -> JSONResponse:
-    """Request a data from telegram
+    """Request a data from telegram.
 
     Args:
         request: Request - HTTP request.
@@ -27,8 +26,8 @@ async def bot_webhook(request: Request) -> JSONResponse:
     data = await request.json()
     update = Update(**data)
     dp = get_dp()
-    task: Task[TelegramMethod[Any] | None] = asyncio.create_task(
-        dp.feed_webhook_update(get_bot(), update)
+    task: Task[TelegramMethod[Any] | None] = create_task(
+        dp.feed_webhook_update(get_bot(), update),
     )
     background_tasks.add(task)
     task.add_done_callback(background_tasks.discard)

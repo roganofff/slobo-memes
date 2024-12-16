@@ -11,7 +11,7 @@ class ChatActionMiddleware(BaseMiddleware):
         self,
         handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        event_data: Dict[str, Any]
+        event_data: Dict[str, Any],
     ) -> Any:
         long_operation_type = get_flag(event_data, 'long_operation')
         if not long_operation_type:
@@ -25,6 +25,6 @@ class ChatActionMiddleware(BaseMiddleware):
         async with ChatActionSender(
             bot=event_data['bot'],
             action=long_operation_type,
-            chat_id=chat_id
+            chat_id=chat_id,
         ):
             return await handler(event, event_data)
