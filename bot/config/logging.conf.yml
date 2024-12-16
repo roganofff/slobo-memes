@@ -1,0 +1,20 @@
+version: 1
+disable_existing_loggers: no
+formatters:
+  console_formatter_bot:
+    (): src.logger.ConsoleFormatter
+handlers:
+  console_handler_bot:
+    class: logging.StreamHandler
+    formatter: console_formatter_bot
+root:
+  level: INFO
+  handlers: [console_handler_bot]
+loggers:
+  'bot_logger':
+    level: INFO
+    propagate: no
+    handlers: [console_handler_bot]
+  'uvicorn':
+    level: INFO
+    propagate: yes

@@ -1,18 +1,21 @@
 import asyncio
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
+import logging
 
 import aio_pika
 import uvicorn
 from fastapi import FastAPI
 
 from src.handlers import (add_meme, change_visibility, delete_meme, list_saved,
-                          meme_saves, random_meme, rate_meme)
+                          meme_saves, random_meme, rate_meme, popular)
 from src.storage.rabbitmq import channel_pool
+from src.logger import LOGGING_CONFIG, logger
 
 
 async def process_messages():
-    async with channel_pool.acquire() as channel: # type: aio_pika.Channel
+    logger.info('Start rabbitmq handler')
+    async with channel_pool.acquire() as channel:
         exchange = await channel.declare_exchange('meme_exchange', aio_pika.ExchangeType.DIRECT)
         add_meme_queue = await channel.declare_queue('add_meme_queue', durable=True)
         await add_meme_queue.bind(exchange, routing_key='add_meme')
@@ -44,13 +47,20 @@ async def process_messages():
         get_saved_meme_queue = await channel.declare_queue('get_saved_meme_queue', durable=True)
         await get_saved_meme_queue.bind(exchange, routing_key='get_saved')
         await get_saved_meme_queue.consume(list_saved.get_meme)
+        popular_meme_queue = await channel.declare_queue('popular_meme_queue', durable=True)
+        await popular_meme_queue.bind(exchange, routing_key='popular_meme')
+        await popular_meme_queue.consume(popular.popular_meme)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    logging.config.dictConfig(LOGGING_CONFIG)
+    logger.info('Starting consumer...')
     task = asyncio.create_task(process_messages())
+    logger.info('Consumer started!')
     yield
     task.cancel()
+    logger.info('Consumer finished!')
 
 
 def create_app() -> FastAPI:
