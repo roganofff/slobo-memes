@@ -17,11 +17,11 @@ from src.background_tasks import background_tasks
 from src.bot import setup_bot, setup_dp
 from src.handlers import router as bot_router
 from src.middlewares import chat_action, state
-
-logging.basicConfig(level=logging.INFO)
+from src.logger import LOGGING_CONFIG, logger
 
 
 async def setup_app() -> tuple[Dispatcher, Bot]:
+    logging.config.dictConfig(LOGGING_CONFIG)
     dp = Dispatcher(storage=None)
     setup_dp(dp)
     dp.include_router(bot_router)
@@ -38,6 +38,7 @@ async def setup_app() -> tuple[Dispatcher, Bot]:
         scope=types.BotCommandScopeAllPrivateChats(),
     )
     setup_bot(bot)
+    logger.info('Finished start')
     return dp, bot
 
 
@@ -49,6 +50,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     while background_tasks:
         await asyncio.sleep(0)
     await bot.delete_webhook()
+    logger.info('Ending lifespan')
 
 
 def create_app() -> FastAPI:
@@ -59,8 +61,10 @@ def create_app() -> FastAPI:
 
 
 async def start_polling() -> None:
+    logger.info('Starting polling')
     dp, bot = await setup_app()
     await bot.delete_webhook()
+    logging.error('Dependencies launched')
     await dp.start_polling(bot)
 
 

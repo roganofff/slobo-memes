@@ -282,14 +282,38 @@ class MemeService:
         session: AsyncSession = db_session,
     ) -> Optional[str]:
         statement = (
-            select(Saved.id)
-            .where(Saved.user_id == user_id)
-            .order_by(Saved.id.asc())
-            .limit(1)
+            select(Saved.id).where(
+                Saved.user_id == user_id
+            ).order_by(
+                Saved.id.asc(),
+            ).limit(1)
         )
         result = (await session.execute(statement)).scalar()
         if result:
             return await MemeService.get_saved_meme_by_id(user_id, result)
+
+    @staticmethod
+    @inject
+    async def popular_meme(
+        user_id: int,
+        session: AsyncSession = Provide(get_db),
+    ) -> Optional[MemeDict]:
+        likes_statement = select(
+            Rating.meme_id, func.count(Rating.id).label('like_count'),
+        ).where(
+            Rating.is_like.is_(True),
+        ).group_by(
+            Rating.meme_id,
+        ).subquery()
+        statement = select(Meme).join(
+            likes_statement, Meme.id == likes_statement.c.meme_id,
+        ).order_by(
+            likes_statement.c.like_count.desc(),
+        ).limit(1)
+        meme = (await session.execute(statement)).scalars().first()
+        if not meme:
+            return None
+        return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
     @inject

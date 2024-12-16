@@ -1,0 +1,20 @@
+version: 1
+disable_existing_loggers: no
+formatters:
+  console_formatter_database:
+    (): src.logger.ConsoleFormatter
+handlers:
+  console_handler_database:
+    class: logging.StreamHandler
+    formatter: console_formatter_database
+root:
+  level: INFO
+  handlers: [console_handler_database]
+loggers:
+  'database_logger':
+    level: INFO
+    propagate: no
+    handlers: [console_handler_database]
+  'uvicorn':
+    level: INFO
+    propagate: yes
