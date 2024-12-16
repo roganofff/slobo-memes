@@ -55,12 +55,12 @@ async def process_messages():
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logging.config.dictConfig(LOGGING_CONFIG)
-    logger.info('Starting consumer...')
+    logger.info('Starting database...')
     task = asyncio.create_task(process_messages())
-    logger.info('Consumer started!')
+    logger.info('Database started!')
     yield
     task.cancel()
-    logger.info('Consumer finished!')
+    logger.info('Database finished!')
 
 
 def create_app() -> FastAPI:

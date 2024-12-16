@@ -8,12 +8,10 @@ from sqlalchemy.sql import func, select
 from src.models import Meme, Rating, Saved
 from src.schema.meme import Meme as MemeDict
 from src.storage.database import get_db
-from src.utils.inject_database import inject
 
 
 class MemeService:
     @staticmethod
-    @inject
     async def __get_mark_count(
         meme: Meme,
         mark: bool,
@@ -31,7 +29,6 @@ class MemeService:
         return count
 
     @staticmethod
-    @inject
     async def build_meme_response(
         meme: Meme,
         user_id: int,
@@ -74,7 +71,6 @@ class MemeService:
         )
 
     @staticmethod
-    @inject
     async def add_meme(
         creator_id: int,
         description: str,
@@ -104,7 +100,6 @@ class MemeService:
         )
 
     @staticmethod
-    @inject
     async def get_random_meme(
         user_id: int,
         public_only: bool,
@@ -128,7 +123,6 @@ class MemeService:
         return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
-    @inject
     async def rate_meme(
         meme_id: uuid.UUID,
         user_id: int,
@@ -155,7 +149,6 @@ class MemeService:
         )
 
     @staticmethod
-    @inject
     async def remove_rating(
         meme_id: uuid.UUID,
         user_id: int,
@@ -176,7 +169,6 @@ class MemeService:
         return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
-    @inject
     async def add_to_saved(
         meme_id: uuid.UUID,
         user_id: int,
@@ -192,7 +184,6 @@ class MemeService:
         return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
-    @inject
     async def remove_from_saved(
         meme_id: uuid.UUID,
         user_id: int,
@@ -210,7 +201,6 @@ class MemeService:
         return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
-    @inject
     async def change_visibility(
         meme_id: uuid.UUID,
         user_id: int,
@@ -227,7 +217,6 @@ class MemeService:
         return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
-    @inject
     async def get_saved_meme_neighbors(
         user_id: int,
         saved_id: str,
@@ -254,7 +243,6 @@ class MemeService:
         return prev_result, next_result
 
     @staticmethod
-    @inject
     async def get_saved_meme_by_id(
         user_id: int,
         saved_id: str,
@@ -278,7 +266,6 @@ class MemeService:
         )
 
     @staticmethod
-    @inject
     async def get_first_saved_meme(
         user_id: int,
     ) -> Optional[str]:
@@ -296,10 +283,8 @@ class MemeService:
         return None
 
     @staticmethod
-    @inject
     async def popular_meme(
         user_id: int,
-        session: AsyncSession = Provide(get_db),
     ) -> Optional[MemeDict]:
         likes_statement = select(
             Rating.meme_id, func.count(Rating.id).label('like_count'),
@@ -313,13 +298,13 @@ class MemeService:
         ).order_by(
             likes_statement.c.like_count.desc(),
         ).limit(1)
-        meme = (await session.execute(statement)).scalars().first()
+        async for session in get_db():
+            meme = (await session.execute(statement)).scalars().first()
         if not meme:
             return None
         return await MemeService.build_meme_response(meme, user_id)
 
     @staticmethod
-    @inject
     async def delete_meme(
         meme_id: uuid.UUID,
         user_id: int,
