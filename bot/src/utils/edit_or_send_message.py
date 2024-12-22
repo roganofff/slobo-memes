@@ -1,6 +1,7 @@
 from aiogram import exceptions
 
 from src.bot import get_bot
+from src.metrics import SEND_MESSAGE
 
 
 async def edit_or_send_message(
@@ -18,3 +19,4 @@ async def edit_or_send_message(
             return
         return
     await bot.send_message(**message_args)
+    SEND_MESSAGE.inc()

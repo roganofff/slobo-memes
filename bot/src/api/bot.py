@@ -5,12 +5,11 @@ from typing import Any
 from aiogram.methods.base import TelegramMethod
 from aiogram.types import Update
 from fastapi.responses import ORJSONResponse
-from starlette.requests import Request
-from starlette.responses import JSONResponse
-
 from src.api.router import router
 from src.background_tasks import background_tasks
 from src.bot import get_bot, get_dp
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 
 @router.post('/bot')

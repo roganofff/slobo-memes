@@ -2,6 +2,7 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, LinkPreviewOptions, Message, InaccessibleMessage
 
+from src.metrics import track_latency
 from src.handlers.router import router
 from src.keyboards.main_menu import keyboard
 from src.states import states
@@ -14,6 +15,7 @@ default_flags = {
 }
 
 
+@track_latency('main_menu')
 async def main_menu(message: Message, query: CallbackQuery | None = None) -> None:
     event = query if query else message
     user_profile_photo = await event.from_user.get_profile_photos()

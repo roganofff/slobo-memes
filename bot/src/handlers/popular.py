@@ -2,6 +2,7 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, LinkPreviewOptions
 
+from src.metrics import SEND_MESSAGE, track_latency
 from src.handlers.router import router
 from src.keyboards.meme import keyboard
 from src.states.states import MainStates, MemeStates
@@ -17,6 +18,7 @@ from src.utils.edit_or_send_message import edit_or_send_message
         'new_state': MemeStates.show,
     },
 )
+@track_latency('popular_meme')
 async def popular_meme(query: CallbackQuery, state: FSMContext) -> None:
     publish_result = await publish_message_with_response(
         routing_key='popular_meme',
@@ -27,6 +29,7 @@ async def popular_meme(query: CallbackQuery, state: FSMContext) -> None:
     if not publish_result:
         query.answer('Мема нет :(')
         return
+    SEND_MESSAGE.inc()
     query.answer()
     message_args = {
         'text': render(

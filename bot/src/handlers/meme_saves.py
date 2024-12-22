@@ -2,6 +2,7 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, LinkPreviewOptions
 
+from src.metrics import SEND_MESSAGE, track_latency
 from src.handlers.router import router
 from src.keyboards.meme import keyboard
 from src.states.states import MemeStates
@@ -10,6 +11,7 @@ from src.templates.env import render
 from src.utils.edit_or_send_message import edit_or_send_message
 
 
+@track_latency('meme_saves')
 async def meme_saves(query: CallbackQuery, state: FSMContext, save: bool) -> None:
     data = await state.get_data()
     public_only = data.get('public_only')
@@ -28,6 +30,7 @@ async def meme_saves(query: CallbackQuery, state: FSMContext, save: bool) -> Non
     if not publish_result:
         query.answer('Ошибка :o')
         return
+    SEND_MESSAGE.inc()
     query.answer()
     message_args = {
         'text': render(

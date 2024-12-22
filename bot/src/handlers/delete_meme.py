@@ -2,6 +2,7 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
+from src.metrics import SEND_MESSAGE, track_latency
 from src.handlers.main_menu import main_menu
 from src.handlers.router import router
 from src.states.states import MainStates, MemeStates
@@ -15,6 +16,7 @@ from src.storage.rabbitmq import publish_message_with_response
         'new_state': MainStates.main_menu,
     },
 )
+@track_latency('delete_meme')
 async def delete_meme(query: CallbackQuery, state: FSMContext) -> None:
     data = await state.get_data()
     meme_id = data['meme_id']
@@ -28,5 +30,6 @@ async def delete_meme(query: CallbackQuery, state: FSMContext) -> None:
     if not publish_result:
         query.answer('Ошибка :o')
         return
+    SEND_MESSAGE.inc()
     query.answer('Успешно!')
     await main_menu(query.message, query)

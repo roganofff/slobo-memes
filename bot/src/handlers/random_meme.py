@@ -3,6 +3,7 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, LinkPreviewOptions
 
+from src.metrics import SEND_MESSAGE, track_latency
 from src.handlers.router import router
 from src.keyboards.meme import keyboard
 from src.states.states import MainStates, MemeStates
@@ -15,6 +16,7 @@ default_flags = {
 }
 
 
+@track_latency('random_meme')
 async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool) -> None:
     publish_result = await publish_message_with_response(
         routing_key='random_meme',
@@ -26,6 +28,7 @@ async def random_meme(query: CallbackQuery, state: FSMContext, public_only: bool
     if not publish_result:
         query.answer('Мемов нет :(')
         return
+    SEND_MESSAGE.inc()
     query.answer()
     message_args = {
         'text': render(

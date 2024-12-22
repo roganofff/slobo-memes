@@ -2,6 +2,7 @@ from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, LinkPreviewOptions, Message
 
+from src.metrics import SEND_MESSAGE, track_latency
 from src.handlers.router import router
 from src.keyboards.meme import keyboard
 from src.keyboards.request_meme import keyboard as request_keyboard
@@ -30,6 +31,7 @@ async def request_meme(query: CallbackQuery, state: FSMContext) -> None:
     AddMemeStates.request_meme,
     flags={'new_state': AddMemeStates.process_meme},
 )
+@track_latency('procces_meme')
 async def process_meme(message: Message, state: FSMContext) -> None:
     await message.delete()
     state_data = await state.get_data()
@@ -61,6 +63,7 @@ async def process_meme(message: Message, state: FSMContext) -> None:
             'image_url': file_url,
         },
     )
+    SEND_MESSAGE.inc()
     message_args = {
         'text': render(
             'meme.jinja2',

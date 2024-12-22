@@ -38,7 +38,7 @@ async def publish_message(routing_key: str, message: dict):
 
 async def publish_message_with_response(routing_key: str, message: dict) -> asyncio.Future:
     response = {}
-    async with channel_pool.acquire() as channel: # type: aio_pika.Channel
+    async with channel_pool.acquire() as channel:
         exchange = await channel.declare_exchange('meme_exchange', aio_pika.ExchangeType.DIRECT)
         callback_queue = await channel.declare_queue(exclusive=True)
         await callback_queue.bind(exchange, routing_key=callback_queue.name)
