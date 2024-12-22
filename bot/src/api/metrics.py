@@ -2,7 +2,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 from starlette.requests import Request
 from starlette.responses import Response
 
-from bot.src.api import router
+from src.api import router
 
 
 @router.get("/metrics")
