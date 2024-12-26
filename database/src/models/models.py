@@ -14,7 +14,7 @@ class UUIDMixin:
     id: Mapped[uuid.UUID] = mapped_column(UUID, primary_key=True, default=uuid.uuid4)
 
 
-class Meme(UUIDMixin, Base):
+class Meme(Base, UUIDMixin):
     __tablename__ = 'memes'
 
     creator_id: Mapped[int] = mapped_column(BigInteger, index=True)
@@ -26,7 +26,7 @@ class Meme(UUIDMixin, Base):
     saved_by: Mapped[list['Saved']] = relationship(cascade='all, delete-orphan')
 
 
-class Rating(UUIDMixin, Base):
+class Rating(Base, UUIDMixin):
     __tablename__ = 'ratings'
 
     meme_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('memes.id', ondelete='CASCADE'))
@@ -40,7 +40,7 @@ class Rating(UUIDMixin, Base):
     )
 
 
-class Saved(UUIDMixin, Base):
+class Saved(Base, UUIDMixin):
     __tablename__ = 'saved'
 
     meme_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('memes.id', ondelete='CASCADE'))
