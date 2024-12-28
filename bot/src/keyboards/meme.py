@@ -40,7 +40,7 @@ async def keyboard(
             text=like_text,
             callback_data=like_data,
         )
-        if not user_rating:
+        if not user_rating and user_rating is not None:
             dislike_text = f'[Ненрав {dislikes}]'
             dislike_data = 'remove_rating'
         else:

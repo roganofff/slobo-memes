@@ -20,7 +20,7 @@ async def get_saved(
     }
     if saved_id:
         routing_key = 'get_saved'
-        message['saved_id'] = int(saved_id)
+        message['saved_id'] = str(saved_id)
     else:
         routing_key = 'first_saved'
     publish_result = await publish_message_with_response(

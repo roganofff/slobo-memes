@@ -7,11 +7,10 @@ from config.settings import settings
 
 
 class Image:
-    __API_URL = 'https://freeimage.host/api/1/upload'
+    __API_URL = 'https://api.imgbb.com/1/upload'
     __PARAMS = MappingProxyType(
         {
             'key': settings.IMAGE_HOST_API_KEY,
-            'format': 'json',
         },
     )
 
@@ -37,11 +36,11 @@ class Image:
         thumbnail_url = ''
         async with ClientSession() as session:
             this_params = cls.__PARAMS.copy()
-            this_params['source'] = source
+            this_params['image'] = source
             response = await cls.upload(session, params=this_params)
             if response:
-                url = response['image']['image']['url']
-                thumbnail_url = response['image']['thumb']['url']
+                url = response['data']['image']['url']
+                thumbnail_url = response['data']['thumb']['url']
         return Image(url, thumbnail_url)
 
     @classmethod
@@ -60,8 +59,8 @@ class Image:
         url = ''
         async with ClientSession() as session:
             this_params = cls.__PARAMS.copy()
-            this_params['source'] = source
+            this_params['image'] = source
             response = await cls.upload(session, params=this_params)
             if response:
-                url = response['image']['image']['url']
+                url = response['data']['image']['url']
         return url
