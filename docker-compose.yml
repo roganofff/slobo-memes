@@ -65,7 +65,7 @@ services:
     restart: unless-stopped
     depends_on:
       rabbitmq:
-        condition: service_started
+        condition: service_healthy
     env_file:
       - bot/config/.env
 
